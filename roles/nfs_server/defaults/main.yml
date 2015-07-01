@@ -5,3 +5,5 @@ nfspath: ''
 nfsmount: ''
 # Domain for idmapd
 nfsdomain: ''
+# Options to rpc.nfsd
+nfsdopts: ''

@@ -68,14 +68,23 @@
   tags:
     - nfs
 
-- name: tweak idmapd settings
+- name: set nfsd options
   lineinfile:
-    dest: /etc/idmapd.conf
-    regexp: '(# )?Domain =.*'
-    line: 'Domain = {{ nfsdomain }}'
+    dest: /etc/default/nfs-kernel-server
+    regexp: '^RPCNFSDOPTS=.*'
+    line: 'RPCNFSDOPTS="{{ nfsdopts }}"'
   sudo: yes
   tags:
     - nfs
+
+#- name: tweak idmapd settings
+#  lineinfile:
+#    dest: /etc/idmapd.conf
+#    regexp: '(# )?Domain =.*'
+#    line: 'Domain = {{ nfsdomain }}'
+#  sudo: yes
+#  tags:
+#    - nfs
 
 - name: start nfs
   service: name=nfs-kernel-server state=started
