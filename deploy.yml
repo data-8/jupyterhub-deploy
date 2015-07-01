@@ -8,7 +8,6 @@
   - 'vars.yml'
   roles:
   - common
-  - rackspace
   - docker
 
 - hosts: proxy
@@ -25,7 +24,6 @@
   - 'vars.yml'
   roles:
   - nfs_server
-  - backup
 
 - hosts: jupyterhub_nodes
   vars_files:
