@@ -1,6 +1,5 @@
 ---
-# Inventory file hostname of the NFS server (note this should be an Ansible
-# alias, not the real hostname)
+# Inventory file hostname of the NFS server
 nfsserver: ''
 # Path to mount NFS on the clients
 nfsmount: ''
