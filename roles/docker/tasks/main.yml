@@ -19,6 +19,10 @@
   sudo: yes
   when: grubbed | changed
 
+- name: install linux-image-extra
+  shell: apt-get -y -q install linux-image-extra-$(uname -r) || true
+  sudo: yes
+
 - name: reboot
   command: shutdown -r now "Ansible updated grub"
   async: 0
