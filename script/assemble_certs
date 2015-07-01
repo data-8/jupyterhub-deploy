@@ -22,6 +22,9 @@ vault_password_file = os.path.join(root, 'vault-password')
 # This is the directory containing the certificates
 certificates_dir = os.path.join(root, 'certificates')
 
+# This is the directory containing the certificates for the outward facing proxy
+proxy_certificates_dir = os.path.join(root, 'proxy-certs')
+
 # This is the name of the certificate authority (not including the extension)
 ca_name = "ca"
 
@@ -31,16 +34,10 @@ ca_name = "ca"
 # the certificate and key are `hub-cert.pem` and `hub-key.pem`, respectively,
 # then the base name is 'hub'.
 name_map = {
-    "jupyterhub_host": "compmodels",
-    "jupyterhub_node1": "compmodels-node-01",
-    "jupyterhub_node2": "compmodels-node-02",
-    "jupyterhub_node3": "compmodels-node-03",
-    "jupyterhub_node4": "compmodels-node-04",
-    "jupyterhub_node5": "compmodels-node-05",
-    "jupyterhub_node6": "compmodels-node-06",
-    "jupyterhub_node7": "compmodels-node-07",
-    "jupyterhub_host_test": "compmodels-hub-test",
-    "jupyterhub_node_test": "compmodels-node-test"
+    "jupyterhub_host": "jupyterhub_host",
+    "jupyterhub_node1": "jupyterhub_node1",
+    "jupyterhub_node2": "jupyterhub_node2",
+    "proxy_server": "proxy_server",
 }
 
 ################################################################################
@@ -95,7 +92,21 @@ for host in name_map:
         with open(os.path.join(certificates_dir, '{}-key.pem'.format(name_map[host])), 'r') as fh:
             secrets["docker_tls_key"] = literal(fh.read())
 
+
+        if host == 'proxy_server':
+            # set the certificate
+            fh = open(os.path.join(proxy_certificates_dir, 'proxy-server.crt'), "r")
+            secrets["ssl_cert"] = literal(fh.read())
+
+            # set the key
+            fh = open(os.path.join(proxy_certificates_dir, 'proxy-server.key'), 'r')
+            secrets["ssl_key"] = literal(fh.read())
+
+            secrets["ssl_cert_path"] = '/etc/ssl/certs/proxy.crt'
+            secrets["ssl_key_path"] = '/etc/ssl/private/proxy.key'
+
         # save the secrets back out
         with open(filename, "w") as fh:
             fh.write("---\n")
             fh.write(yaml.dump(secrets, default_flow_style=False))
+
