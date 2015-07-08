@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -e
+
+openssl rand -hex 32 > passphrase.txt
+chmod 600 passphrase.txt 
+cat passphrase.txt
+
+openssl genrsa -des3 -out proxy-server.key 2048
+
+openssl req -new -key proxy-server.key -out proxy-server.csr
+
+cp proxy-server.key proxy-server.key.orig
+
+openssl rsa -in proxy-server.key.orig -out proxy-server.key
+
+openssl x509 -req -days 365 -in proxy-server.csr -signkey proxy-server.key -out proxy-server.crt
+
