@@ -1,5 +1,11 @@
 DEPLOY_C="ds/deploy:1"
 
+rootsshkey:
+	for h in proxy_server jupyterhub_host jupyterhub_node1 jupyterhub_node2 ; do \
+		echo $$h ; \
+		ssh ubuntu@$$h 'sudo cp -p /root/.ssh/authorized_keys{,-}; sudo install -o root -m 0600 /home/ubuntu/.ssh/authorized_keys /root/.ssh/authorized_keys' ; \
+	done
+
 build:
 	docker build -t $(DEPLOY_C) .
 
