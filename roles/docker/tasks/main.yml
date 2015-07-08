@@ -23,6 +23,10 @@
   shell: apt-get -y -q install linux-image-extra-$(uname -r) || true
   sudo: yes
 
+- name: add aufs to /etc/modules
+  shell: echo aufs >> /etc/modules || true
+  sudo: yes
+
 - name: reboot
   command: shutdown -r now "Ansible updated grub"
   async: 0
