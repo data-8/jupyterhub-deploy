@@ -8,4 +8,5 @@ RUN pip2.7 install terminado
 RUN pip3.4 install terminado
 
 # Install datascience
+RUN pip2.7 install datascience
 RUN pip3.4 install datascience
