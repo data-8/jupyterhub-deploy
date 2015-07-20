@@ -19,10 +19,12 @@
   sudo: yes
   tags:
     - docker-rebuild
+    - systemuser-rebuild
 
 - name: build compmodels/systemuser image
   shell: docker build -t compmodels/systemuser /srv/systemuser
   sudo: yes
   tags:
     - docker-rebuild
+    - systemuser-rebuild
 
