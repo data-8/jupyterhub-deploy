@@ -1,0 +1,55 @@
+#!/usr/bin/python
+#vim: set tabstop=4 shiftwidth=4:
+
+import os
+import sys
+import urllib
+
+# Usage:
+#     cat email.txt | python split-email.py
+# Output:
+#     etc/ssl/certs/NFQDN.x509*
+
+def download(url, filename):
+	print filename
+	if os.path.exists(filename):
+		print 'File exists: %s. Skipping.' % filename
+		return
+	f = urlopener.open(url)
+	buf = f.read()
+	f.close()
+	
+	f = open(filename, 'w')
+	f.write(buf)
+	f.close()
+
+# MAIN
+urlopener = urllib.URLopener()
+
+f = sys.stdin
+line = f.readline()
+while line != '':
+	line = line.strip()
+	if line.startswith('Subject:'):
+		# The Subject long can be line and run over to the next so we combine
+		# them.
+		line = line.strip()
+		nextline = f.readline()
+		if nextline.startswith(' '):
+			line = line + ' ' + nextline.strip()
+		# Subject: Enrollment Successful - Your SSL certificate for
+		#  somehost.berkeley.edu is ready
+		hostname = line.split()[-3]
+		cert_dir = ''
+		for p in [hostname, 'etc', 'ssl', 'certs']:
+			cert_dir = os.path.join(cert_dir, p)
+			if not os.path.exists(cert_dir): os.mkdir(cert_dir)
+		nfqdn = hostname.split('.')[0]
+		path = os.path.join(cert_dir, nfqdn + '.x509')
+	else:
+		for ext in ['CO', 'IO', 'IOR', '']:
+			if line.endswith('format=x509' + ext):
+				url = line.split()[-1]
+				download(url, path + ext)
+	line = f.readline()
+	continue
