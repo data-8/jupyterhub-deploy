@@ -6,32 +6,77 @@
     image: compmodels/nginx
     name: nginx
   sudo: yes
+  tags:
+    - proxy-rebuild
 
-- name: stop and remove static files container
-  docker:
-    docker_api_version: "{{ docker_api_version }}"
-    state: absent
-    image: jupyter/systemuser
-    name: static-files
-  sudo: yes
+#- name: stop and remove static files container
+#  docker:
+#    docker_api_version: "{{ docker_api_version }}"
+#    state: absent
+#    image: static-files
+#    name: static-files
+#  sudo: yes
+#  tags:
+#    - proxy-rebuild
 
 # Get static resources from the userland container
-- name: static files container
-  docker:
-    image: jupyter/systemuser
-    state: running
-    name: static-files
-    command: echo "#data-container-hack"
-    volumes:
-    - "{{ notebook_static_files }}"
+#- name: static files container
+#  docker:
+#    image: jupyter/systemuser
+#    state: running
+#    name: static-files
+#    command: echo "#data-container-hack"
+#    volumes:
+#    - "{{ notebook_static_files }}"
+#  tags:
+#    - proxy-rebuild
+
+- name: pull static ipython data
+  git:
+    repo: https://github.com/ipython/ipython
+    dest: /srv/ipython
+    version: 3.x
+    force: yes
   tags:
-    - docker-rebuild
+    - proxy-rebuild
+
+#- name: download dsten css
+#  get_url: url=https://raw.githubusercontent.com/dsten/notebook/master/notebook/static/custom/dsten.css dest=/srv/ipython/IPython/html/static/custom/dsten.css
+#  tags:
+#    - proxy-rebuild
+
+#- name: Move dsten.css to custom.css
+#  command: mv /srv/ipython/IPython/html/static/custom/dsten.css /srv/ipython/IPython/html/static/custom/custom.css
+#  tags:
+#    - proxy-rebuild
+
+#- name: download dsten js
+#  get_url: url=https://raw.githubusercontent.com/dsten/notebook/master/notebook/static/custom/dsten.js dest=/srv/ipython/IPython/html/static/custom/dsten.js
+#  tags:
+#    - proxy-rebuild
+
+#- name: Move dsten.js to custom.js
+#  command: mv /srv/ipython/IPython/html/static/custom/dsten.js /srv/ipython/IPython/html/static/custom/custom.js
+#  tags:
+#    - proxy-rebuild
+
+#- name: Fix custom.js
+#  command: sed -i 's/dsten.css/custom.css/' /srv/ipython/IPython/html/static/custom/custom.js
+#  tags:
+#    - proxy-rebuild
+
+#- name: Use rawgit for bililite
+#  command: sed -i '/src.*bililiteRange/s/raw.githubusercontent/cdn.rawgit/' /srv/ipython/IPython/html/static/custom/custom.js
+#  tags:
+#    - proxy-rebuild
 
 - name: configuration directories
   file: state=directory dest={{ item }} mode=0755
   with_items:
   - "{{ nginx_config_dir }}"
   sudo: yes
+  tags:
+    - proxy-rebuild
 
 - name: SSL credentials
   template: src={{ item.from }} dest={{ item.to }} mode=0644
@@ -41,14 +86,20 @@
   - from: ssl.crt.j2
     to: "{{ ssl_cert_path }}"
   sudo: yes
+  tags:
+    - proxy-rebuild
 
 - name: nginx configuration
   template: src=nginx.conf.j2 dest={{ nginx_config_dir }}/nginx.conf mode=0644
   sudo: yes
+  tags:
+    - proxy-rebuild
 
 - name: copy the Dockerfile to the nginx configuration directory
   template: src=Dockerfile.j2 dest={{ nginx_config_dir }}/Dockerfile mode=0644
   sudo: yes
+  tags:
+    - proxy-rebuild
 
 - name: build tmpnb nginx image
   docker_image:
@@ -56,6 +107,8 @@
     name: compmodels/nginx
     state: build
   sudo: yes
+  tags:
+    - proxy-rebuild
 
 - name: launch nginx
   docker:
@@ -65,7 +118,7 @@
     name: nginx
     volumes: "{{ nginx_volumes }}"
     ports: "{{ nginx_ports }}"
-    volumes_from:
-    - static-files
   tags:
-    - docker-rebuild
+    - proxy-rebuild
+
+
