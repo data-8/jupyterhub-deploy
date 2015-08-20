@@ -24,5 +24,7 @@ ADD userlist /srv/oauthenticator/userlist
 ADD swarmspawner.py /srv/oauthenticator/swarmspawner.py
 ADD docker_oauth.py /srv/oauthenticator/docker_oauth.py
 
+RUN sed -i -e 's/^<\/body>/&\n  <div><p style="padding:1em; position:absolute; left:0px; bottom:0px;">This computing environment is provided through the generous support of the Microsoft Azure platform and the Intel Corporation.<\/p><\/div>\n&/' /usr/local/share/jupyter/hub/templates/page.html
+
 # set working directory to the jupyterhub directory
 WORKDIR /srv/jupyterhub
