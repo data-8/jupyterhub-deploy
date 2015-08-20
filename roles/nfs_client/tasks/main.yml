@@ -3,8 +3,6 @@
   when: nfsserver == ''
 - fail: msg="nfsmount is not defined"
   when: nfsmount == ''
-- fail: msg="nfsdomain is not defined"
-  when: nfsdomain == ''
 
 - name: install nfs client
   apt: update_cache=yes cache_valid_time=600 name=nfs-common state=present
@@ -19,22 +17,7 @@
     - nfs
 
 - name: configure /etc/fstab on clients
-  mount: name={{ nfsmount }} src={{ hostvars[nfsserver]['ansible_ssh_host'] }}:{{ nfspath }}/home fstype=nfs opts={{ nfsoptions }} state=mounted
-  sudo: yes
-  tags:
-    - nfs
-
-- name: tweak idmapd settings
-  lineinfile:
-    dest: /etc/idmapd.conf
-    regexp: '(# )?Domain =.*'
-    line: 'Domain = {{ nfsdomain }}'
-  sudo: yes
-  tags:
-    - nfs
-
-- name: restart idmapd
-  service: name=idmapd state=restarted
+  mount: name={{ nfsmount }} src={{ nfsserver }}:{{ nfspath }} fstype=nfs opts={{ nfsoptions }} state=mounted
   sudo: yes
   tags:
     - nfs
