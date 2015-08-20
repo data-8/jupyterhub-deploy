@@ -40,8 +40,8 @@ class SwarmSpawner(SystemUserSpawner):
         # start the container
         if extra_create_kwargs is None:
             extra_create_kwargs = {}
-        if 'mem_limit' not in extra_create_kwargs:
-            extra_create_kwargs['mem_limit'] = '1g'
+        #if 'mem_limit' not in extra_create_kwargs:
+        #    extra_create_kwargs['mem_limit'] = '1g'
         if 'working_dir' not in extra_create_kwargs:
             extra_create_kwargs['working_dir'] = self.homedir
         yield DockerSpawner.start(
