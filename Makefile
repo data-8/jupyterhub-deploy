@@ -40,3 +40,7 @@ systemuser-rebuild:
 jupyterhub-rebuild:
 	script/assemble_certs
 	script/deploy -t $@
+
+interact-rebuild:
+	script/assemble_certs
+	script/deploy -t $@

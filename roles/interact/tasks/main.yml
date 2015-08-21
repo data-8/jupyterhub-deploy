@@ -1,0 +1,98 @@
+---
+- fail: msg="jupyterhub_admin_user is not defined"
+  when: jupyterhub_admin_user == ''
+
+#- name: stop and remove interact container
+#  docker:
+#    docker_api_version: "{{ docker_api_version }}"
+#    state: absent
+#    image: dsten/interact
+#    name: interact
+#  sudo: yes
+#  tags:
+#    - interact-rebuild
+
+#- name: create the /srv/interact directory
+#  file: path=/srv/interact state=directory
+#  sudo: yes
+#  tags:
+#    - interact-rebuild
+
+#- name: copy the Dockerfile to /srv/interact
+#  copy:
+#    src: Dockerfile
+#    dest: /srv/interact/Dockerfile
+#  sudo: yes
+#  tags:
+#    - interact-rebuild
+
+#- name: build dsten/interact image
+#  shell: docker build -t dsten/interact /srv/interact
+#  sudo: yes
+#  tags:
+#    - interact-rebuild
+
+- name: install daemon for interact
+  apt: update_cache=yes cache_valid_time=600 name=daemon state=latest
+  sudo: yes
+  tags:
+    - interact-rebuild
+
+- name: stop interact
+  shell: "daemon -n interact --running && daemon -n interact --stop || echo ok"
+  sudo: yes
+  tags:
+    - interact-rebuild
+
+- name: ensure that daemon says interact is not running
+  shell: "[ ! $(daemon -n interact --running) ]"
+  sudo: yes
+  tags:
+    - interact-rebuild
+
+- name: get a jupyterhub api token
+  command: docker exec jupyterhub jupyterhub token -f /srv/jupyterhub/jupyterhub_config.py {{ jupyterhub_admin_user }}
+  register: jpy_api_token
+  sudo: yes
+  tags:
+    - interact-rebuild
+
+- name: install flask libraries
+  command: pip3 install flask requests webargs
+  sudo: yes
+  tags:
+    - interact-rebuild
+
+- name: install interact
+  git:
+    repo: https://github.com/dsten/DS8-interact
+    dest: /srv/interact
+    force: yes
+  tags:
+    - interact-rebuild
+
+- name: start interact
+  command: env JPY_API_TOKEN={{ jpy_api_token.stdout }} daemon -n interact -o /var/log/interact.log -- python3 /srv/interact/run.py --production
+      
+  tags:
+    - interact-rebuild
+
+- name: ensure interact is running
+  shell: daemon -n interact --running
+  sudo: yes
+  tags:
+    - interact-rebuild
+#- name: launch interact
+#  docker:
+#    docker_api_version: "{{ docker_api_version }}"
+#    state: running
+#    image: dsten/interact
+#    detach: true
+#    ports: 8002:8002
+#    name: interact
+#    net: bridge
+#    env:
+#      JPY_API_TOKEN: "{{ jpy_api_token.stdout }}"
+#  sudo: yes
+#  tags:
+#    - interact-rebuild
