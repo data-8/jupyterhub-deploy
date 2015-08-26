@@ -17,11 +17,12 @@ RUN pip3.4 install notebook-ok-extension
 RUN pip2.7 install okpy
 RUN pip3.4 install okpy
 
-# /usr/local/lib/python3.4/dist-packages/IPython/html/static/custom/
-#ADD https://raw.githubusercontent.com/dsten/notebook/master/notebook/static/custom/dsten.css /usr/local/lib/python3.4/dist-packages/IPython/html/static/custom/dsten.css
-#ADD https://raw.githubusercontent.com/dsten/notebook/master/notebook/static/custom/dsten.css /srv/ipython/IPython/html/static/custom/dsten.css
+# Disable Python 2 kernel
+RUN mv /usr/local/share/jupyter/kernels/python2 /var/tmp/
 
-#ADD https://raw.githubusercontent.com/dsten/notebook/master/notebook/static/custom/dsten.js /usr/local/lib/python3.4/dist-packages/IPython/html/static/custom/dsten.js
-#ADD https://raw.githubusercontent.com/dsten/notebook/master/notebook/static/custom/dsten.js /srv/ipython/IPython/html/static/custom/dsten.js
+# Download ok.css and ok.js and install into an ok extension directory.
+# This is utilized by files created through /etc/skel/.
+ADD https://raw.githubusercontent.com/dsten/notebook-ok-extension/master/ok/ok.css https://raw.githubusercontent.com/dsten/notebook-ok-extension/master/ok/ok.js /usr/local/share/jupyter/nbextensions/ok/
 
-#RUN sed -i "s/.*custom\/custom.*/    \'custom\/dsten\',\n&/" /usr/local/lib/python3.4/dist-packages/IPython/html/static/notebook/js/main.js
+# ADD uses 0600 by default
+RUN chmod 0644 /usr/local/share/jupyter/nbextensions/ok/ok.css /usr/local/share/jupyter/nbextensions/ok/ok.js
