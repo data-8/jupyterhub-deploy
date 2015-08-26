@@ -1,14 +1,4 @@
 ---
-- name: stop and remove nginx container
-  docker:
-    docker_api_version: "{{ docker_api_version }}"
-    state: absent
-    image: compmodels/nginx
-    name: nginx
-  sudo: yes
-  tags:
-    - proxy-rebuild
-
 #- name: stop and remove static files container
 #  docker:
 #    docker_api_version: "{{ docker_api_version }}"
@@ -39,36 +29,6 @@
     force: yes
   tags:
     - proxy-rebuild
-
-#- name: download dsten css
-#  get_url: url=https://raw.githubusercontent.com/dsten/notebook/master/notebook/static/custom/dsten.css dest=/srv/ipython/IPython/html/static/custom/dsten.css
-#  tags:
-#    - proxy-rebuild
-
-#- name: Move dsten.css to custom.css
-#  command: mv /srv/ipython/IPython/html/static/custom/dsten.css /srv/ipython/IPython/html/static/custom/custom.css
-#  tags:
-#    - proxy-rebuild
-
-#- name: download dsten js
-#  get_url: url=https://raw.githubusercontent.com/dsten/notebook/master/notebook/static/custom/dsten.js dest=/srv/ipython/IPython/html/static/custom/dsten.js
-#  tags:
-#    - proxy-rebuild
-
-#- name: Move dsten.js to custom.js
-#  command: mv /srv/ipython/IPython/html/static/custom/dsten.js /srv/ipython/IPython/html/static/custom/custom.js
-#  tags:
-#    - proxy-rebuild
-
-#- name: Fix custom.js
-#  command: sed -i 's/dsten.css/custom.css/' /srv/ipython/IPython/html/static/custom/custom.js
-#  tags:
-#    - proxy-rebuild
-
-#- name: Use rawgit for bililite
-#  command: sed -i '/src.*bililiteRange/s/raw.githubusercontent/cdn.rawgit/' /srv/ipython/IPython/html/static/custom/custom.js
-#  tags:
-#    - proxy-rebuild
 
 - name: configuration directories
   file: state=directory dest={{ item }} mode=0755
@@ -101,7 +61,17 @@
   tags:
     - proxy-rebuild
 
-- name: build tmpnb nginx image
+- name: stop and remove nginx container
+  docker:
+    docker_api_version: "{{ docker_api_version }}"
+    state: absent
+    image: compmodels/nginx
+    name: nginx
+  sudo: yes
+  tags:
+    - proxy-rebuild
+
+- name: build nginx container
   docker_image:
     path: "{{ nginx_config_dir }}"
     name: compmodels/nginx
@@ -110,7 +80,7 @@
   tags:
     - proxy-rebuild
 
-- name: launch nginx
+- name: start nginx container
   docker:
     docker_api_version: "{{ docker_api_version }}"
     image: compmodels/nginx
@@ -120,5 +90,3 @@
     ports: "{{ nginx_ports }}"
   tags:
     - proxy-rebuild
-
-
