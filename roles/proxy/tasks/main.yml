@@ -7,7 +7,7 @@
 #    name: static-files
 #  sudo: yes
 #  tags:
-#    - proxy-rebuild
+#    - rebuild-proxy
 
 # Get static resources from the userland container
 #- name: static files container
@@ -19,7 +19,7 @@
 #    volumes:
 #    - "{{ notebook_static_files }}"
 #  tags:
-#    - proxy-rebuild
+#    - rebuild-proxy
 
 - name: pull static ipython data
   git:
@@ -28,7 +28,7 @@
     version: 3.x
     force: yes
   tags:
-    - proxy-rebuild
+    - rebuild-proxy
 
 - name: configuration directories
   file: state=directory dest={{ item }} mode=0755
@@ -36,7 +36,7 @@
   - "{{ nginx_config_dir }}"
   sudo: yes
   tags:
-    - proxy-rebuild
+    - rebuild-proxy
 
 - name: SSL credentials
   template: src={{ item.from }} dest={{ item.to }} mode=0644
@@ -47,19 +47,19 @@
     to: "{{ ssl_cert_path }}"
   sudo: yes
   tags:
-    - proxy-rebuild
+    - rebuild-proxy
 
 - name: nginx configuration
   template: src=nginx.conf.j2 dest={{ nginx_config_dir }}/nginx.conf mode=0644
   sudo: yes
   tags:
-    - proxy-rebuild
+    - rebuild-proxy
 
 - name: copy the Dockerfile to the nginx configuration directory
   template: src=Dockerfile.j2 dest={{ nginx_config_dir }}/Dockerfile mode=0644
   sudo: yes
   tags:
-    - proxy-rebuild
+    - rebuild-proxy
 
 - name: stop and remove nginx container
   docker:
@@ -69,7 +69,7 @@
     name: nginx
   sudo: yes
   tags:
-    - proxy-rebuild
+    - rebuild-proxy
 
 - name: build nginx container
   docker_image:
@@ -78,7 +78,7 @@
     state: build
   sudo: yes
   tags:
-    - proxy-rebuild
+    - rebuild-proxy
 
 - name: start nginx container
   docker:
@@ -89,4 +89,4 @@
     volumes: "{{ nginx_volumes }}"
     ports: "{{ nginx_ports }}"
   tags:
-    - proxy-rebuild
+    - rebuild-proxy

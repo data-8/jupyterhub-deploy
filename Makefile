@@ -29,18 +29,18 @@ retry:
 clean:
 	docker rm $(shell docker ps -n=1 -q)
 
-proxy-rebuild:
+rebuild-proxy:
 	script/assemble_certs
 	script/deploy -t $@
 
-systemuser-rebuild:
+rebuild-systemuser:
 	script/assemble_certs
 	script/deploy -t $@
 
-jupyterhub-rebuild:
+rebuild-jupyterhub:
 	script/assemble_certs
 	script/deploy -t $@
 
-interact-rebuild:
+rebuild-interact:
 	script/assemble_certs
 	script/deploy -t $@

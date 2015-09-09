@@ -16,11 +16,11 @@
     dest: /srv/systemuser/Dockerfile
   sudo: yes
   tags:
-    - systemuser-rebuild
+    - rebuild-systemuser
 
 - name: build compmodels/systemuser image
   shell: docker build -t compmodels/systemuser /srv/systemuser
   sudo: yes
   tags:
-    - systemuser-rebuild
+    - rebuild-systemuser
 

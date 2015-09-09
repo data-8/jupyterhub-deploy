@@ -24,25 +24,25 @@
     name: jupyterhub
   sudo: yes
   tags:
-    - jupyterhub-rebuild
+    - rebuild-jupyterhub
 
 - name: create the jupyterhub_db directory
   file: path=/srv/jupyterhub_db state=directory
   sudo: yes
   tags:
-    - jupyterhub-rebuild
+    - rebuild-jupyterhub
 
 - name: create jupyterhub.sqlite
   file: path=/srv/jupyterhub_db/jupyterhub.sqlite state=touch mode=0600
   sudo: yes
   tags:
-    - jupyterhub-rebuild
+    - rebuild-jupyterhub
 
 - name: create the jupyterhub directory
   file: path=/srv/jupyterhub state=directory
   sudo: yes
   tags:
-    - jupyterhub-rebuild
+    - rebuild-jupyterhub
 
 - name: copy the Dockerfile to the jupyterhub directory
   copy:
@@ -50,7 +50,7 @@
     dest: /srv/jupyterhub/Dockerfile
   sudo: yes
   tags:
-    - jupyterhub-rebuild
+    - rebuild-jupyterhub
 
 - name: copy jupyterhub_config.py to the jupyterhub directory
   template:
@@ -58,31 +58,31 @@
     dest: /srv/jupyterhub/jupyterhub_config.py
   sudo: yes
   tags:
-    - jupyterhub-rebuild
+    - rebuild-jupyterhub
 
 - name: create the userlist
   template: src=userlist.j2 dest=/srv/jupyterhub/userlist
   sudo: yes
   tags:
-    - jupyterhub-rebuild
+    - rebuild-jupyterhub
 
 - name: add swarmspawner.py
   copy: src=swarmspawner.py dest=/srv/jupyterhub/swarmspawner.py
   sudo: yes
   tags:
-    - jupyterhub-rebuild
+    - rebuild-jupyterhub
 
 - name: add docker_oauth.py
   copy: src=docker_oauth.py dest=/srv/jupyterhub/docker_oauth.py
   sudo: yes
   tags:
-    - jupyterhub-rebuild
+    - rebuild-jupyterhub
 
 - name: build compmodels/jupyterhub image
   shell: docker build -t compmodels/jupyterhub /srv/jupyterhub
   sudo: yes
   tags:
-    - jupyterhub-rebuild
+    - rebuild-jupyterhub
 
 - name: launch jupyterhub
   docker:
@@ -105,4 +105,4 @@
         - /srv/jupyterhub_db:/srv/jupyterhub_db
         - "{{ docker_tls_path }}:{{ docker_tls_path }}"
   tags:
-    - jupyterhub-rebuild
+    - rebuild-jupyterhub
