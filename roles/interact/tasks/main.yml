@@ -72,7 +72,8 @@
     - interact-rebuild
 
 - name: start interact
-  command: env JPY_API_TOKEN={{ jpy_api_token.stdout }} daemon -n interact -o /var/log/interact.log -- python3 /srv/interact/run.py --production
+  command: env JPY_API_TOKEN={{ jpy_api_token.stdout }} daemon -n interact -o /var/log/interact.log --chdir=/srv -- python3 /srv/interact/run.py --production
+  sudo: yes
       
   tags:
     - interact-rebuild
