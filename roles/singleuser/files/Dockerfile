@@ -8,8 +8,8 @@ RUN pip2.7 install terminado
 RUN pip3.4 install terminado
 
 # Install datascience
-RUN pip2.7 install datascience==0.3.8
-RUN pip3.4 install datascience==0.3.8
+RUN pip2.7 install datascience==0.3.14
+RUN pip3.4 install datascience==0.3.14
 
 RUN pip2.7 install notebook-ok-extension
 RUN pip3.4 install notebook-ok-extension
