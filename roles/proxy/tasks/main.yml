@@ -30,6 +30,24 @@
   tags:
     - rebuild-proxy
 
+- name: install mathjax
+  apt: update_cache=yes cache_valid_time=600 name=libjs-mathjax state=latest
+  sudo: yes
+  tags:
+    - rebuild-proxy
+
+- name: create static mathjax directory
+  file: state=directory dest=/srv/ipython/IPython/html/static/components/MathJax mode=0755
+  sudo: yes
+  tags:
+    - rebuild-proxy
+
+- name: copy mathjax assets to static directory
+  command: rsync -av /usr/share/javascript/mathjax/ /srv/ipython/IPython/html/static/components/MathJax/
+  sudo: yes
+  tags:
+    - rebuild-proxy
+
 - name: configuration directories
   file: state=directory dest={{ item }} mode=0755
   with_items:
