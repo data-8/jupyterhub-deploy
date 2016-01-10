@@ -66,3 +66,8 @@ vault-password
 old
 vars.local.yml
 certificates.bak
+secrets.vault.yml
+users.vault.yml
+
+.swp
+
