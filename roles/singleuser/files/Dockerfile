@@ -4,17 +4,17 @@ FROM jupyter/systemuser
 RUN pip3.4 install git+git://github.com/jhamrick/nbgrader.git@compmodels
 
 # Install terminado
-RUN pip2.7 install terminado
+#RUN pip2.7 install terminado
 RUN pip3.4 install terminado
 
 # Install datascience
-RUN pip2.7 install datascience==0.3.dev21
-RUN pip3.4 install datascience==0.3.dev21
+#RUN pip2.7 install datascience==0.3.dev22
+RUN pip3.4 install datascience==0.3.dev22
 
-RUN pip2.7 install notebook-ok-extension
+#RUN pip2.7 install notebook-ok-extension
 RUN pip3.4 install notebook-ok-extension
 
-RUN pip2.7 install okpy
+#RUN pip2.7 install okpy
 RUN pip3.4 install okpy
 
 # Disable Python 2 kernel
