@@ -58,7 +58,7 @@
     - rebuild-interact
 
 - name: install flask libraries
-  command: pip3 install flask requests webargs
+  command: pip3 install flask requests webargs gitpython
   sudo: yes
   tags:
     - rebuild-interact
