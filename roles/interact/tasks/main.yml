@@ -57,12 +57,6 @@
   tags:
     - rebuild-interact
 
-- name: install flask libraries
-  command: pip3 install flask requests webargs gitpython
-  sudo: yes
-  tags:
-    - rebuild-interact
-
 - name: install interact
   git:
     repo: https://github.com/dsten/DS8-interact
@@ -71,10 +65,15 @@
   tags:
     - rebuild-interact
 
+- name: install flask libraries
+  command: chdir=/srv/interact pip3 install -r requirements.txt
+  sudo: yes
+  tags:
+    - rebuild-interact
+
 - name: start interact
   command: env JPY_API_TOKEN={{ jpy_api_token.stdout }} daemon -n interact -o /var/log/interact.log --chdir=/srv -- python3 /srv/interact/run.py --production
   sudo: yes
-      
   tags:
     - rebuild-interact
 
