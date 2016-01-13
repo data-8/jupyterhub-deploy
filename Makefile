@@ -13,13 +13,13 @@ run:
 	docker run -it \
 		-v $$SSH_AUTH_SOCK:/root/agent.sock --env SSH_AUTH_SOCK=/root/agent.sock \
 		-v /home/ubuntu/.ssh:/root/.ssh \
-		-v $(shell pwd)/../proxy-certs/:/root/jupyterhub-deploy/proxy-certs \
-		-v $(shell pwd)/../certificates/:/root/jupyterhub-deploy/certificates \
+		-v /home/ubuntu/proxy-certs/:/root/jupyterhub-deploy/proxy-certs \
+		-v /home/ubuntu/certificates/:/root/jupyterhub-deploy/certificates \
 		$(DEPLOY_C) /bin/bash
 
 deploy:
 	ansible-vault encrypt --vault-password-file vault-password secrets.vault.yml
-	ansible-vault encrypt --vault-password-file vault-password users.vault.yml  
+	ansible-vault encrypt --vault-password-file vault-password users.vault.yml
 	script/assemble_certs
 	script/deploy
 
