@@ -6,6 +6,10 @@
 - name: pip install script
   get_url: dest=/tmp/get_pip.py url=https://bootstrap.pypa.io/get-pip.py
 
-- name: pip
-  command: python /tmp/get_pip.py creates=/usr/local/bin/pip
+- name: pip3
+  command: python3 /tmp/get_pip.py creates=/usr/local/bin/pip3
+  sudo: yes
+
+- name: pip2
+  command: python /tmp/get_pip.py creates=/usr/local/bin/pip2
   sudo: yes
