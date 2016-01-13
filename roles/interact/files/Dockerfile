@@ -1,6 +1,6 @@
 FROM python:3
 
-RUN pip install flask requests webargs
+RUN pip install flask requests webargs gitpython
 
 RUN git clone https://github.com/dsten/DS8-interact /srv/interact
 
