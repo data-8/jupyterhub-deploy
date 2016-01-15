@@ -1,0 +1,47 @@
+#!/usr/bin/python
+#
+# This script:
+#
+#  - parses the jupyterhub inventory file and copies the public key
+#    deployed by the cloud vendor at ~ubuntu/.ssh/authorized_keys into
+#    /root/.ssh/authorized_keys for each host.
+#  - write host alias entries into ~/.ssh/config
+#
+# Runs from jupyterhub-deploy/ and uses "inventory" and "vault-password" files.
+
+import os
+import sys
+import argparse
+import subprocess
+import ansible.inventory
+
+parser = argparse.ArgumentParser()
+if len(sys.argv) > 1:
+	args, arg_hosts = parser.parse_known_args(sys.argv[1:])
+
+# To readily ssh to hosts, alias or run ssh as
+# "ssh -F ~/jupyterhub-deploy/ssh_config"
+CONFIG_FILE = '/home/ubuntu/jupyterhub-deploy/ssh_config'
+HOST_FMT = 'Host %s\nUser=root\nHostName=%s\n\n'
+if os.path.exists(CONFIG_FILE):
+	os.rename(CONFIG_FILE, CONFIG_FILE + '.bak')
+f = open(CONFIG_FILE, 'a')
+
+DEBUG = False
+
+SSH = ['ssh']
+if DEBUG: SSH = ['echo'] + SSH
+REMOTE_CMD = 'sudo cp -p /root/.ssh/authorized_keys{,-}; sudo install -o root -m 0600 /home/ubuntu/.ssh/authorized_keys /root/.ssh/authorized_keys'
+
+vault_password = open('../jupyterhub-deploy/vault-password').read().strip()
+inv = ansible.inventory.Inventory(
+	host_list='../jupyterhub-deploy/inventory',
+	vault_password=vault_password)
+for host in inv.get_group('all').get_hosts():
+	# If the user specified hosts and this isn't one of them
+	if len(arg_hosts) > 0 and host.name not in arg_hosts:
+		continue
+	keyname = host.name
+	ip = host.vars['fqdn']
+	subprocess.call(SSH + ["ubuntu@"+ip, REMOTE_CMD])
+	f.write(HOST_FMT % (host.name, ip))
