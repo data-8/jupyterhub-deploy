@@ -37,6 +37,12 @@ name_map = {
     "jupyterhub_host": "jupyterhub_host",
     "jupyterhub_node1": "jupyterhub_node1",
     "jupyterhub_node2": "jupyterhub_node2",
+    "jupyterhub_node3": "jupyterhub_node3",
+    "jupyterhub_node4": "jupyterhub_node4",
+    "jupyterhub_node5": "jupyterhub_node5",
+    "jupyterhub_node6": "jupyterhub_node6",
+    "jupyterhub_node7": "jupyterhub_node7",
+    "jupyterhub_node8": "jupyterhub_node8",
     "proxy_server": "proxy_server",
 }
 
@@ -69,7 +75,7 @@ def vault(filename):
         "--vault-password-file", vault_password_file
     ])
 
-
+# TODO: read inventory file instead
 for host in name_map:
     filename = os.path.join("host_vars", host)
     with vault(filename):
@@ -109,4 +115,3 @@ for host in name_map:
         with open(filename, "w") as fh:
             fh.write("---\n")
             fh.write(yaml.dump(secrets, default_flow_style=False))
-
