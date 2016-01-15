@@ -20,7 +20,7 @@
   docker:
     docker_api_version: "{{ docker_api_version }}"
     state: absent
-    image: compmodels/jupyterhub
+    image: jupyterhub
     name: jupyterhub
   sudo: yes
   tags:
@@ -78,8 +78,8 @@
   tags:
     - rebuild-jupyterhub
 
-- name: build compmodels/jupyterhub image
-  shell: docker build -t compmodels/jupyterhub /srv/jupyterhub
+- name: build jupyterhub image
+  shell: docker build -t jupyterhub /srv/jupyterhub
   sudo: yes
   tags:
     - rebuild-jupyterhub
@@ -88,7 +88,7 @@
   docker:
     docker_api_version: "{{ docker_api_version }}"
     state: running
-    image: compmodels/jupyterhub
+    image: jupyterhub
     detach: true
     net: host
     name: jupyterhub
