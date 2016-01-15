@@ -2,17 +2,37 @@
 
 set -e
 
-openssl rand -hex 32 > passphrase.txt
-chmod 600 passphrase.txt 
-cat passphrase.txt
+if [ -z "$1" ]; then
+	echo Usage: fully.qualified.hostname
+	exit 1
+fi
 
-openssl genrsa -des3 -out proxy-server.key 2048
+if [ ! -d ./"${1}" ]; then
+	mkdir -p ./"${1}"/etc/ssl/{certs,private}
+fi
 
-openssl req -new -key proxy-server.key -out proxy-server.csr
+SSL_DIR=./${1}/etc/ssl
+SNAKEOIL_PASSPHRASE="${SSL_DIR}/snakeoil-passphrase.txt"
+SNAKEOIL_KEY="${SSL_DIR}/private/snakeoil.key"
+SNAKEOIL_CSR="${SSL_DIR}/certs/snakeoil.csr"
+SNAKEOIL_CRT="${SSL_DIR}/certs/snakeoil.crt"
 
-cp proxy-server.key proxy-server.key.orig
+openssl rand -hex 32 > ${SNAKEOIL_PASSPHRASE}
+chmod 600 ${SNAKEOIL_PASSPHRASE}
+echo
+echo Generated the following snakeoil passphrase. Use when prompted.
+cat ${SNAKEOIL_PASSPHRASE}
+echo
+sleep 2
 
-openssl rsa -in proxy-server.key.orig -out proxy-server.key
+openssl genrsa -des3 -out ${SNAKEOIL_KEY} 2048
 
-openssl x509 -req -days 365 -in proxy-server.csr -signkey proxy-server.key -out proxy-server.crt
+openssl req -new -key ${SNAKEOIL_KEY} -out ${SNAKEOIL_CSR}
+
+cp -p ${SNAKEOIL_KEY} ${SNAKEOIL_KEY}.orig
+
+openssl rsa -in ${SNAKEOIL_KEY}.orig -out ${SNAKEOIL_KEY}
+
+openssl x509 -req -days 365 -in ${SNAKEOIL_CSR} -signkey ${SNAKEOIL_KEY} \
+	-out ${SNAKEOIL_CRT}
 
