@@ -3,7 +3,7 @@
   docker:
     docker_api_version: "{{ docker_api_version }}"
     state: absent
-    image: compmodels/systemuser
+    image: systemuser
   sudo: yes
 
 - name: create the systemuser directory
@@ -18,8 +18,8 @@
   tags:
     - rebuild-systemuser
 
-- name: build compmodels/systemuser image
-  shell: docker build -t compmodels/systemuser /srv/systemuser
+- name: build systemuser image
+  shell: docker build -t systemuser /srv/systemuser
   sudo: yes
   tags:
     - rebuild-systemuser
