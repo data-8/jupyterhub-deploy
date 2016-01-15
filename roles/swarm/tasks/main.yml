@@ -3,7 +3,7 @@
   docker:
     docker_api_version: "{{ docker_api_version }}"
     state: absent
-    image: compmodels/swarm
+    image: swarm
     name: swarm
   sudo: yes
 
@@ -19,15 +19,15 @@
   template: src=Dockerfile.j2 dest=/srv/swarm/Dockerfile
   sudo: yes
 
-- name: build compmodels/swarm image
-  shell: docker build -t compmodels/swarm /srv/swarm
+- name: build swarm image
+  shell: docker build -t swarm /srv/swarm
   sudo: yes
 
 - name: launch swarm
   docker:
     docker_api_version: "{{ docker_api_version }}"
     state: running
-    image: compmodels/swarm
+    image: swarm
     detach: true
     name: swarm
     net: host
