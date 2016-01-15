@@ -17,7 +17,7 @@ c.Authenticator.whitelist = whitelist = set()
 
 # Configure the spawner
 c.JupyterHub.spawner_class = 'swarmspawner.SwarmSpawner'
-c.SystemUserSpawner.container_image = 'compmodels/systemuser'
+c.SystemUserSpawner.container_image = 'systemuser'
 c.DockerSpawner.tls_cert = '{{ docker_tls_path }}/cert.pem'
 c.DockerSpawner.tls_key = '{{ docker_tls_path }}/key.pem'
 c.DockerSpawner.remove_containers = True
