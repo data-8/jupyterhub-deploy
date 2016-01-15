@@ -25,7 +25,7 @@
   git:
     repo: https://github.com/ipython/ipython
     dest: /srv/ipython
-    version: 3.x
+    version: 4.0.x
     force: yes
   tags:
     - rebuild-proxy
@@ -83,7 +83,7 @@
   docker:
     docker_api_version: "{{ docker_api_version }}"
     state: absent
-    image: compmodels/nginx
+    image: nginx
     name: nginx
   sudo: yes
   tags:
@@ -92,7 +92,7 @@
 - name: build nginx container
   docker_image:
     path: "{{ nginx_config_dir }}"
-    name: compmodels/nginx
+    name: nginx
     state: build
   sudo: yes
   tags:
@@ -101,7 +101,7 @@
 - name: start nginx container
   docker:
     docker_api_version: "{{ docker_api_version }}"
-    image: compmodels/nginx
+    image: nginx
     state: running
     name: nginx
     volumes: "{{ nginx_volumes }}"
