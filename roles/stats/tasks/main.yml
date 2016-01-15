@@ -6,36 +6,48 @@
   docker:
     docker_api_version: "{{ docker_api_version }}"
     state: absent
-    image: compmodels/stats
+    image: stats
     name: stats
   sudo: yes
+  tags:
+    rebuild-stats
 
 - name: create the /srv/stats directory
   file: path=/srv/stats state=directory
   sudo: yes
+  tags:
+    rebuild-stats
 
 - name: create the /srv/stats/db directory
   file: path=/srv/stats/db state=directory
   sudo: yes
+  tags:
+    rebuild-stats
 
 - name: copy the Dockerfile to /srv/stats
   template: src=Dockerfile.j2 dest=/srv/stats/Dockerfile
   sudo: yes
+  tags:
+    rebuild-stats
 
-- name: build compmodels/stats image
-  shell: docker build -t compmodels/stats /srv/stats
+- name: build stats image
+  shell: docker build -t stats /srv/stats
   sudo: yes
+  tags:
+    rebuild-stats
 
 - name: get a jupyterhub api token
   command: docker exec jupyterhub jupyterhub token -f /srv/jupyterhub/jupyterhub_config.py {{ jupyterhub_admin_user }}
   register: jpy_api_token
   sudo: yes
+  tags:
+    rebuild-stats
 
 - name: launch stats
   docker:
     docker_api_version: "{{ docker_api_version }}"
     state: running
-    image: compmodels/stats
+    image: stats
     detach: true
     name: stats
     net: host
@@ -44,3 +56,5 @@
     volumes:
         - /srv/stats/db:/srv/stats/db
   sudo: yes
+  tags:
+    rebuild-stats
