@@ -2,36 +2,6 @@
 - fail: msg="jupyterhub_admin_user is not defined"
   when: jupyterhub_admin_user == ''
 
-#- name: stop and remove interact container
-#  docker:
-#    docker_api_version: "{{ docker_api_version }}"
-#    state: absent
-#    image: dsten/interact
-#    name: interact
-#  sudo: yes
-#  tags:
-#    - rebuild-interact
-
-#- name: create the /srv/interact directory
-#  file: path=/srv/interact state=directory
-#  sudo: yes
-#  tags:
-#    - rebuild-interact
-
-#- name: copy the Dockerfile to /srv/interact
-#  copy:
-#    src: Dockerfile
-#    dest: /srv/interact/Dockerfile
-#  sudo: yes
-#  tags:
-#    - rebuild-interact
-
-#- name: build dsten/interact image
-#  shell: docker build -t dsten/interact /srv/interact
-#  sudo: yes
-#  tags:
-#    - rebuild-interact
-
 - name: install daemon for interact
   apt: update_cache=yes cache_valid_time=600 name=daemon state=latest
   sudo: yes
@@ -59,11 +29,19 @@
 
 - name: install interact
   git:
-    repo: https://github.com/dsten/DS8-interact
+    repo: https://github.com/data-8/DS8-interact
     dest: /srv/interact
     force: yes
+    version: "azure"
   tags:
     - rebuild-interact
+
+- name: download get_pip.py
+  get_url: dest=/tmp/get_pip.py url=https://bootstrap.pypa.io/get-pip.py
+
+- name: install pip for python3
+  command: python3 /tmp/get_pip.py creates=/usr/local/bin/pip3
+  sudo: yes
 
 - name: install flask libraries
   command: chdir=/srv/interact pip3 install -r requirements.txt
@@ -82,17 +60,3 @@
   sudo: yes
   tags:
     - rebuild-interact
-#- name: launch interact
-#  docker:
-#    docker_api_version: "{{ docker_api_version }}"
-#    state: running
-#    image: dsten/interact
-#    detach: true
-#    ports: 8002:8002
-#    name: interact
-#    net: bridge
-#    env:
-#      JPY_API_TOKEN: "{{ jpy_api_token.stdout }}"
-#  sudo: yes
-#  tags:
-#    - rebuild-interact
