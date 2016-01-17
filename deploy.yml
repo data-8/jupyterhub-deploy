@@ -30,8 +30,8 @@
   - 'secrets.vault.yml'
   - 'vars.yml'
   roles:
-  - nfs_client
   - singleuser
+  - nfs_client
 
 - hosts: jupyterhub_host
   vars_files:
