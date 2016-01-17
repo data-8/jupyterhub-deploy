@@ -1,5 +1,10 @@
 FROM jupyter/systemuser
 
+RUN apt-get update && \
+        DEBIAN_FRONTEND=noninteractive apt-get install -q -y \
+	texlive-latex-extra \
+	texlive-generic-recommended
+
 # This isn't done by conda? Otherwise the container will fail to start with
 # "/usr/bin/env: python3: No such file or directory" since
 # /srv/singleuser/systemuser.sh (/bin/sh) launches jupyterhub-singleuser
@@ -15,18 +20,18 @@ RUN sed -i \
 	/opt/conda/lib/python3.4/site-packages/matplotlib/mpl-data/matplotlibrc
 
 RUN pip install datascience==0.3.dev22
+RUN pip install pypandoc
 
-RUN mkdir /root/.jupyter
-RUN pip install notebook-ok-extension
-
-RUN pip install okpy
+#RUN mkdir /root/.jupyter
+#RUN pip install notebook-ok-extension
+#RUN pip install okpy
 
 # Disable Python 2 kernel
 RUN mv /usr/local/share/jupyter/kernels/python2 /var/tmp/
 
 # Download ok.css and ok.js and install into an ok extension directory.
 # This is utilized by files created through /etc/skel/.
-ADD https://raw.githubusercontent.com/data-8/notebook-ok-extension/master/ok/ok.css https://raw.githubusercontent.com/data-8/notebook-ok-extension/master/ok/ok.js /usr/local/share/jupyter/nbextensions/ok/
+#ADD https://raw.githubusercontent.com/data-8/notebook-ok-extension/master/ok/ok.css https://raw.githubusercontent.com/data-8/notebook-ok-extension/master/ok/ok.js /usr/local/share/jupyter/nbextensions/ok/
 
 # ADD uses 0600 by default
-RUN chmod 0644 /usr/local/share/jupyter/nbextensions/ok/ok.css /usr/local/share/jupyter/nbextensions/ok/ok.js
+#RUN chmod 0644 /usr/local/share/jupyter/nbextensions/ok/ok.css /usr/local/share/jupyter/nbextensions/ok/ok.js
