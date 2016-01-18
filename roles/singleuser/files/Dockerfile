@@ -19,7 +19,7 @@ RUN sed -i \
 	-e '/^backend/s/Qt4Agg/svg/' \
 	/opt/conda/lib/python3.4/site-packages/matplotlib/mpl-data/matplotlibrc
 
-RUN pip install datascience==0.3.dev22
+RUN pip install datascience==0.4.0.post1
 RUN pip install pypandoc
 
 #RUN mkdir /root/.jupyter
