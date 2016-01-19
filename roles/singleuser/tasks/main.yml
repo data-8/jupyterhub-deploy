@@ -9,6 +9,8 @@
 - name: create the systemuser directory
   file: path=/srv/systemuser state=directory
   sudo: yes
+  tags:
+    - rebuild-systemuser
 
 - name: copy the Dockerfile to the systemuser directory
   copy:
