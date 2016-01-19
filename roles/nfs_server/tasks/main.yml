@@ -67,8 +67,8 @@
   tags:
     - nfs
 
-- name: restart idmapd
-  service: name=idmapd state=restarted
-  sudo: yes
-  tags:
-    - nfs
+#- name: restart idmapd
+#  service: name=idmapd state=restarted
+#  sudo: yes
+#  tags:
+#    - nfs
