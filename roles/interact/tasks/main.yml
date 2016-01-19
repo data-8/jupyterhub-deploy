@@ -32,7 +32,6 @@
     repo: https://github.com/data-8/DS8-interact
     dest: /srv/interact
     force: yes
-    version: "azure"
   tags:
     - rebuild-interact
 
