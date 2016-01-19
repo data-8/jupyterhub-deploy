@@ -22,6 +22,7 @@ RUN sed -i \
 RUN conda install --yes setuptools
 RUN conda install --yes sphinx
 RUN pip install datascience==0.4.0.post1
+RUN pip install okpy==1.5.0
 RUN pip install pypandoc
 
 # Disable Python 2 kernel
