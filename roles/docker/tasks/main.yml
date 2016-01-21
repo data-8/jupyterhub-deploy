@@ -104,10 +104,10 @@
   tags:
     - rebuild-docker
 
-#- name: remove docker containers
-#  shell: docker rm -v $(docker ps -a -q) || true
-#  tags:
-#    - rebuild-docker
+- name: remove docker containers
+  shell: docker rm -v $(docker ps -a -q) || true
+  tags:
+    - rebuild-docker
 
 - name: turn off docker cleanup cronjob
   cron: name="docker cleanup" state=absent
@@ -120,4 +120,10 @@
     - rebuild-docker
 
 - name: run docker cleanup cronjob
-  cron: name="docker cleanup" minute=15 user="root" job="/usr/bin/docker rmi $(/usr/bin/docker images -q --filter 'dangling=true')"
+  cron: name="docker cleanup" minute=15 user="root" job="/usr/local/sbin/docker-cleanup"
+
+- name: install docker cleanup script
+  copy: src=docker-cleanup dest=/usr/local/sbin/docker-cleanup mode=0744
+  sudo: yes
+  tags:
+  - rebuild-docker
