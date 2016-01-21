@@ -68,6 +68,7 @@ vars.local.yml
 certificates.bak
 secrets.vault.yml
 users.vault.yml
+ssh_config
 
 .swp
 

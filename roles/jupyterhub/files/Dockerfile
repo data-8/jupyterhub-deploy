@@ -1,14 +1,14 @@
 FROM jupyter/jupyterhub
 
-MAINTAINER Jessica Hamrick <jhamrick@berkeley.edu>
+MAINTAINER Ryan Lovett <rylo@berkeley.edu>
 
 # We need to update pip, otherwise the version of requests that
 # is installed by dockerspawner breaks things.
 RUN pip3 install --upgrade pip
 
 # Install dockerspawner and oauthenticator
-RUN /usr/local/bin/pip3 install docker-py
-RUN /usr/local/bin/pip3 install git+git://github.com/jupyter/dockerspawner.git
+RUN /usr/local/bin/pip3 install git+git://github.com/docker/docker-py.git@1e916a1e83af49bc8d2fd5026ca9746129d1cebc
+RUN /usr/local/bin/pip3 install git+git://github.com/jupyter/dockerspawner.git@c7a3f6d75adeaa67116ff237984c45af57e0fa93
 RUN /usr/local/bin/pip3 install git+git://github.com/ryanlovett/jh-google-oauthenticator.git
 
 # Add variable to allow connecting to the docker swarm
@@ -24,7 +24,7 @@ ADD userlist /srv/oauthenticator/userlist
 ADD swarmspawner.py /srv/oauthenticator/swarmspawner.py
 ADD docker_oauth.py /srv/oauthenticator/docker_oauth.py
 
-RUN sed -i -e 's/^<\/body>/&\n  <div><p style="padding:1em; position:absolute; left:0px; bottom:0px;">This computing environment is provided through the generous support of the Microsoft Azure platform and the Intel Corporation.<\/p><\/div>\n&/' /usr/local/share/jupyter/hub/templates/page.html
+#RUN sed -i -e 's/^<\/body>/&\n  <div><p style="padding:1em; position:absolute; left:0px; bottom:0px;">This computing environment is provided through the generous support of the Microsoft Azure platform and the Intel Corporation.<\/p><\/div>\n&/' /usr/local/share/jupyter/hub/templates/page.html
 
 # set working directory to the jupyterhub directory
 WORKDIR /srv/jupyterhub

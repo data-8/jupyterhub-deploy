@@ -3,28 +3,12 @@
   when: nfspath == ''
 - fail: msg="nfsmount is not defined"
   when: nfsmount == ''
-- fail: msg="nfsdomain is not defined"
-  when: nfsdomain == ''
 
 - name: install nfs packages
   apt: update_cache=yes cache_valid_time=600 name=nfs-kernel-server,nfs-common state=latest
   sudo: yes
   tags:
     - nfs
-
-# - name: install mdadm
-#   apt: update_cache=yes cache_valid_time=600 name=mdadm state=latest
-#   sudo: yes
-#   tags:
-#     - nfs
-#   when: not test
-
-# - name: run the lsi-cards script
-#   script: lsi-cards {{ ansible_fqdn }} /var/lib/docker creates=/etc/{{ ansible_fqdn }}.raid-setup
-#   sudo: yes
-#   tags:
-#     - nfs
-#   when: not test
 
 - name: stop nfs
   service: name=nfs-kernel-server state=stopped
@@ -33,7 +17,7 @@
     - nfs
 
 - name: unmount existing volumes
-  shell: umount {{ nfspath }}/home || true
+  shell: umount {{ nfspath }} || true
   sudo: yes
   tags:
     - nfs
@@ -45,7 +29,7 @@
     - nfs
 
 - name: create sub directory for NFS volume
-  file: path={{ nfspath }}/home state=directory
+  file: path={{ nfspath }} state=directory
   sudo: yes
   tags:
     - nfs
@@ -57,7 +41,7 @@
     - nfs
 
 - name: mount NFS volume
-  shell: mount --bind {{ nfsmount }} {{ nfspath }}/home
+  shell: mount --bind {{ nfsmount }} {{ nfspath }}
   sudo: yes
   tags:
     - nfs
@@ -77,23 +61,14 @@
   tags:
     - nfs
 
-#- name: tweak idmapd settings
-#  lineinfile:
-#    dest: /etc/idmapd.conf
-#    regexp: '(# )?Domain =.*'
-#    line: 'Domain = {{ nfsdomain }}'
-#  sudo: yes
-#  tags:
-#    - nfs
-
 - name: start nfs
   service: name=nfs-kernel-server state=started
   sudo: yes
   tags:
     - nfs
 
-- name: restart idmapd
-  service: name=idmapd state=restarted
-  sudo: yes
-  tags:
-    - nfs
+#- name: restart idmapd
+#  service: name=idmapd state=restarted
+#  sudo: yes
+#  tags:
+#    - nfs

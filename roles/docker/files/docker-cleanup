@@ -1,0 +1,9 @@
+#!/bin/bash
+
+IMAGES="$(/usr/bin/docker images -q --filter 'dangling=true')"
+
+if [ -z "${IMAGES}" ]; then
+    exit 0
+fi
+
+/usr/bin/docker rmi ${IMAGES}

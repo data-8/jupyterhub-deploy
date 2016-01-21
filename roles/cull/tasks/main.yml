@@ -6,35 +6,47 @@
   docker:
     docker_api_version: "{{ docker_api_version }}"
     state: absent
-    image: compmodels/cull
+    image: cull
     name: cull
   sudo: yes
+  tags:
+    rebuild-cull
 
 - name: create the /srv/cull directory
   file: path=/srv/cull state=directory
   sudo: yes
+  tags:
+    rebuild-cull
 
 - name: copy the Dockerfile to /srv/cull
   template: src=Dockerfile.j2 dest=/srv/cull/Dockerfile
   sudo: yes
+  tags:
+    rebuild-cull
 
-- name: build compmodels/cull image
-  shell: docker build -t compmodels/cull /srv/cull
+- name: build cull image
+  shell: docker build -t cull /srv/cull
   sudo: yes
+  tags:
+    rebuild-cull
 
 - name: get a jupyterhub api token
   command: docker exec jupyterhub jupyterhub token -f /srv/jupyterhub/jupyterhub_config.py {{ jupyterhub_admin_user }}
   register: jpy_api_token
   sudo: yes
+  tags:
+    rebuild-cull
 
 - name: launch cull
   docker:
     docker_api_version: "{{ docker_api_version }}"
     state: running
-    image: compmodels/cull
+    image: cull
     detach: true
     name: cull
     net: host
     env:
       JPY_API_TOKEN: "{{ jpy_api_token.stdout }}"
   sudo: yes
+  tags:
+    rebuild-cull

@@ -35,6 +35,13 @@
   tags:
     - rebuild-interact
 
+- name: download get_pip.py
+  get_url: dest=/tmp/get_pip.py url=https://bootstrap.pypa.io/get-pip.py
+
+- name: install pip for python3
+  command: python3 /tmp/get_pip.py creates=/usr/local/bin/pip3
+  sudo: yes
+
 - name: install flask libraries
   command: chdir=/srv/interact pip3 install -r requirements.txt
   sudo: yes

@@ -1,20 +1,31 @@
-DEPLOY_C="ds/deploy:1"
+DEPLOY_C="ds/deploy:2"
 
-rootsshkey:
-	for h in proxy_server jupyterhub_host jupyterhub_node1 jupyterhub_node2 ; do \
-		echo $$h ; \
-		ssh ubuntu@$$h 'sudo cp -p /root/.ssh/authorized_keys{,-}; sudo install -o root -m 0600 /home/ubuntu/.ssh/authorized_keys /root/.ssh/authorized_keys' ; \
-	done
+ansible:
+	curl -sO https://bootstrap.pypa.io/get-pip.py
+	sudo python get-pip.py
+	sudo pip install ansible
+
+docker:
+	curl -so install-docker.sh https://get.docker.com
+	sudo bash install-docker.sh
+	sudo usermod -aG docker $(shell id -u -n)
+
+vault-password:
+	openssl rand -hex 32 > vault-password
+
+root_logins:
+	script/enable-root-logins
 
 build: secrets.vault.yml inventory
 	docker build -t $(DEPLOY_C) .
 
 run:
 	docker run -it \
-		-v $$SSH_AUTH_SOCK:/root/agent.sock --env SSH_AUTH_SOCK=/root/agent.sock \
-		-v /home/ubuntu/.ssh:/root/.ssh \
-		-v /home/ubuntu/proxy-certs/:/root/jupyterhub-deploy/proxy-certs \
-		-v /home/ubuntu/certificates/:/root/jupyterhub-deploy/certificates \
+		-v $$SSH_AUTH_SOCK:/root/agent.sock \
+		--env SSH_AUTH_SOCK=/root/agent.sock \
+		-v $(shell pwd)/../.ssh:/root/.ssh \
+		-v $(shell pwd)/../proxy-certs/:/root/jupyterhub-deploy/proxy-certs \
+		-v $(shell pwd)/../certificates/:/root/jupyterhub-deploy/certificates \
 		$(DEPLOY_C) /bin/bash
 
 deploy:
@@ -44,3 +55,7 @@ rebuild-jupyterhub:
 rebuild-interact:
 	script/assemble_certs
 	script/deploy -t $@
+
+jupyterhub_host:
+	script/assemble_certs
+	script/deploy -l $@
