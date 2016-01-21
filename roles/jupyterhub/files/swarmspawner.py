@@ -61,3 +61,7 @@ class SwarmSpawner(SystemUserSpawner):
             self.container_name, name, self.user.server.ip, self.user.server.port))
 
         self.log.info(self.env)
+
+    def _user_id_default(self):
+        print(self.user.state) # debug
+        return self.user.state['user_id']
