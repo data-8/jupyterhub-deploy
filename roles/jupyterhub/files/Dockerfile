@@ -4,7 +4,7 @@ MAINTAINER Ryan Lovett <rylo@berkeley.edu>
 
 # We need to update pip, otherwise the version of requests that
 # is installed by dockerspawner breaks things.
-RUN pip3 install --upgrade pip
+#RUN pip3 install --upgrade pip
 
 # Install dockerspawner and oauthenticator
 RUN /usr/local/bin/pip3 install git+git://github.com/docker/docker-py.git@1e916a1e83af49bc8d2fd5026ca9746129d1cebc

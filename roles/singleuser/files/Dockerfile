@@ -19,9 +19,9 @@ RUN sed -i \
 	-e '/^backend/s/Qt4Agg/svg/' \
 	/opt/conda/lib/python3.4/site-packages/matplotlib/mpl-data/matplotlibrc
 
-RUN conda install --yes setuptools
-RUN conda install --yes sphinx
-RUN pip install datascience==0.4.0.post1
+# See https://github.com/pypa/pip/issues/2751 for reasoning
+# behind --ignore-installed.
+RUN pip install --ignore-installed datascience==0.4.0.post1
 RUN pip install okpy==1.5.1
 RUN pip install pypandoc
 
