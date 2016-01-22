@@ -3,5 +3,12 @@
 # to get an API key from JupyterHub
 jupyterhub_admin_user: ''
 
+# API token to access private repos on github.com/data-8
+github_api_token: ''
+
+# Base URL for the deployment eg. ds8.berkeley.edu . Don't include the protocol
+# or a trailing slash.
+base_url: ''
+
 # Needed to make sure the API version matches with docker-py
 docker_api_version: 1.16
