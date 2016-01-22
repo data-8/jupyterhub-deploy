@@ -1,4 +1,4 @@
-FROM jupyter/jupyterhub:1a4226419f0ecdceec98c26d8c4525cd3bb04b82
+FROM jupyter/jupyterhub
 
 MAINTAINER Ryan Lovett <rylo@berkeley.edu>
 
