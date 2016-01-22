@@ -5,6 +5,9 @@
 - fail: msg="github_api_token is not defined"
   when: github_api_token == ''
 
+- fail: msg="base_url is not defined"
+  when: base_url == ''
+
 - name: install daemon for interact
   apt: update_cache=yes cache_valid_time=600 name=daemon state=latest
   sudo: yes
@@ -54,7 +57,8 @@
 - name: start interact
   command: >
     env JPY_API_TOKEN={{ jpy_api_token.stdout }}
-    env GITHUB_API_TOKEN={{ github_api_token }}
+        GITHUB_API_TOKEN={{ github_api_token }}
+        BASE_URL={{ base_url }}
     daemon -n interact -o /var/log/interact.log --chdir=/srv --
       python3 /srv/interact/run.py --production
   sudo: yes
