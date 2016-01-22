@@ -56,6 +56,10 @@ rebuild-interact:
 	script/assemble_certs
 	script/deploy -t $@
 
+rebuild-cull:
+	script/assemble_certs
+	script/deploy -t $@
+
 jupyterhub_host:
 	script/assemble_certs
 	script/deploy -l $@
