@@ -31,6 +31,17 @@ class SwarmSpawner(SystemUserSpawner):
         info = yield self.docker('info')
         num_nodes = int(info['DriverStatus'][3][1])
         node_info = info['DriverStatus'][4::8]
+        try:
+            pass
+            #import tempfile
+            #ft = tempfile.mkstemp(suffix='.jh')
+            #f = open(ft[1], 'w')
+            #f.write(str(info['DriverStatus']) + '\n')
+            #f.write('num_nodes: ' + str(num_nodes) + '\n')
+            #f.write('num_node_info: ' + str(node_info) + '\n')
+            #f.close()
+        except:
+            pass
         self.node_info = {}
         for i in range(num_nodes):
             node, ip_port = node_info[i]
@@ -41,7 +52,7 @@ class SwarmSpawner(SystemUserSpawner):
         if extra_host_config is None:
             extra_host_config = {}
         if 'mem_limit' not in extra_host_config:
-            extra_host_config['mem_limit'] = '3g'
+            extra_host_config['mem_limit'] = '2g'
 
         # specify extra creation options
         if extra_create_kwargs is None:
@@ -50,6 +61,7 @@ class SwarmSpawner(SystemUserSpawner):
             extra_create_kwargs['working_dir'] = self.homedir
 
         # start the container
+        self.log.info("starting container: image:{}".format(image))
         yield DockerSpawner.start(
             self, image=image, extra_create_kwargs=extra_create_kwargs,
             extra_host_config=extra_host_config)
