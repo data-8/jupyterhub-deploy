@@ -26,6 +26,7 @@ run:
 		-v $(shell pwd)/../.ssh:/root/.ssh \
 		-v $(shell pwd)/../proxy-certs/:/root/jupyterhub-deploy/proxy-certs \
 		-v $(shell pwd)/../certificates/:/root/jupyterhub-deploy/certificates \
+		-v /var/tmp/ansible-fact-cache:/var/tmp/ansible-fact-cache \
 		$(DEPLOY_C) /bin/bash
 
 deploy:
