@@ -1,0 +1,8 @@
+#!/bin/bash
+
+exec ssh -F /home/ubuntu/jupyterhub-deploy/ssh_config hub \
+	docker --tls -H tcp://127.0.0.1:2376 ps | \
+	egrep -v "CONTAINER|COMMAND" | \
+	sed -e 's/.*10.0.0/10.0.0/' -e 's/->8888.tcp//' -e 's/\// /' \
+		-e 's/jupyter-//' | \
+	while read line ; do printf "%20s\t%8s\t%-22s\n" $line; done
