@@ -1,0 +1,10 @@
+#!/bin/bash
+
+TOKEN=$1
+
+if [ -z "$TOKEN" ]; then
+	echo Usage $0 TOKEN
+	exit 1
+fi
+
+curl -H "Authorization: token $TOKEN" -XPOST http://10.0.0.6:8081/hub/api/proxy
