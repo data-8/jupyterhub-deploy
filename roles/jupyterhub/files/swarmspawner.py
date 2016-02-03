@@ -31,17 +31,9 @@ class SwarmSpawner(SystemUserSpawner):
         info = yield self.docker('info')
         num_nodes = int(info['DriverStatus'][3][1])
         node_info = info['DriverStatus'][4::8]
-        try:
-            pass
-            #import tempfile
-            #ft = tempfile.mkstemp(suffix='.jh')
-            #f = open(ft[1], 'w')
-            #f.write(str(info['DriverStatus']) + '\n')
-            #f.write('num_nodes: ' + str(num_nodes) + '\n')
-            #f.write('num_node_info: ' + str(node_info) + '\n')
-            #f.close()
-        except:
-            pass
+        self.log.info(str(info['DriverStatus']))
+        self.log.info('num_nodes: ' + str(num_nodes))
+        self.log.info('num_node_info: ' + str(node_info))
         self.node_info = {}
         for i in range(num_nodes):
             node, ip_port = node_info[i]
