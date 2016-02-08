@@ -1,4 +1,4 @@
-FROM jupyter/jupyterhub:master
+FROM jupyter/jupyterhub:0.4.1
 
 MAINTAINER Ryan Lovett <rylo@berkeley.edu>
 
@@ -30,3 +30,5 @@ ADD docker_oauth.py /srv/oauthenticator/docker_oauth.py
 
 # set working directory to the jupyterhub directory
 WORKDIR /srv/jupyterhub
+
+#CMD ["jupyterhub", "-f", "/srv/jupyterhub/jupyterhub_config.py"]
