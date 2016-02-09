@@ -21,7 +21,7 @@ RUN sed -i \
 
 # See https://github.com/pypa/pip/issues/2751 for reasoning
 # behind --ignore-installed.
-RUN pip install --ignore-installed datascience==0.4.0.post1
+RUN pip install --ignore-installed datascience==0.5.3
 RUN pip install okpy==1.5.1
 RUN pip install pypandoc
 
