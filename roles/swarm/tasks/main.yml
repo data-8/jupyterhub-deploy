@@ -6,22 +6,32 @@
     image: swarm
     name: swarm
   sudo: yes
+  tags:
+    - rebuild-swarm
 
 - name: create the /srv/swarm directory
   file: path=/srv/swarm state=directory
   sudo: yes
+  tags:
+    - rebuild-swarm
 
 - name: create the cluster list
   template: src=cluster.j2 dest=/srv/swarm/cluster
   sudo: yes
+  tags:
+    - rebuild-swarm
 
 - name: copy the Dockerfile to /srv/swarm
   template: src=Dockerfile.j2 dest=/srv/swarm/Dockerfile
   sudo: yes
+  tags:
+    - rebuild-swarm
 
 - name: build swarm image
   shell: docker build -t swarm /srv/swarm
   sudo: yes
+  tags:
+    - rebuild-swarm
 
 - name: launch swarm
   docker:
@@ -35,3 +45,5 @@
         - /root/.swarm:/root/.swarm
         - "{{ docker_tls_path }}:{{ docker_tls_path }}"
   sudo: yes
+  tags:
+    - rebuild-swarm
