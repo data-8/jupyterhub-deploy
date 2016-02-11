@@ -1,5 +1,7 @@
 DEPLOY_C="ds/deploy:2"
 
+REBUILD_TAGS=rebuild-proxy rebuild-systemuser rebuild-jupyterhub rebuild-interact rebuild-cull rebuild-swarm jupyterhub_host
+
 ansible:
 	curl -sO https://bootstrap.pypa.io/get-pip.py
 	sudo python get-pip.py
@@ -40,26 +42,6 @@ retry:
 clean:
 	docker rm $(shell docker ps -n=1 -q)
 
-rebuild-proxy:
+$(REBUILD_TAGS):
 	script/assemble_certs
 	script/deploy -t $@
-
-rebuild-systemuser:
-	script/assemble_certs
-	script/deploy -t $@
-
-rebuild-jupyterhub:
-	script/assemble_certs
-	script/deploy -t $@
-
-rebuild-interact:
-	script/assemble_certs
-	script/deploy -t $@
-
-rebuild-cull:
-	script/assemble_certs
-	script/deploy -t $@
-
-jupyterhub_host:
-	script/assemble_certs
-	script/deploy -l $@
