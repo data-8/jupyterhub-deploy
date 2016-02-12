@@ -19,9 +19,12 @@ RUN sed -i \
 	-e '/^backend/s/Qt4Agg/svg/' \
 	/opt/conda/lib/python3.4/site-packages/matplotlib/mpl-data/matplotlibrc
 
-RUN pip install --ignore-installed datascience==0.5.2
+RUN pip install --ignore-installed datascience==0.5.4
 RUN pip install okpy==1.5.1
 RUN pip install pypandoc
+
+RUN conda install --yes gdal==2.0.0 libgdal==2.0.0
+RUN pip install geopy==1.11.0
 
 # Disable Python 2 kernel
 RUN mv /usr/local/share/jupyter/kernels/python2 /var/tmp/
