@@ -19,7 +19,7 @@ RUN sed -i \
 	-e '/^backend/s/Qt4Agg/svg/' \
 	/opt/conda/lib/python3.4/site-packages/matplotlib/mpl-data/matplotlibrc
 
-RUN pip install --ignore-installed datascience==0.5.4
+RUN pip install --ignore-installed datascience==0.5.6
 RUN pip install okpy==1.5.1
 RUN pip install pypandoc
 
