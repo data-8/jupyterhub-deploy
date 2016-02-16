@@ -13,6 +13,8 @@
     line: GRUB_CMDLINE_LINUX="cgroup_enable=memory swapaccount=1"
   register: grubbed
   sudo: yes
+  tags:
+    - rebuild-docker
 
 #- name: apply changed grub settings
 #  command: update-grub
@@ -22,10 +24,14 @@
 # This pulls in the latest stable kernel
 - name: install linux-image-generic
   apt: name=linux-image-generic
+  tags:
+    - rebuild-docker
 
 - name: add aufs to /etc/modules
   shell: echo aufs >> /etc/modules || true
   sudo: yes
+  tags:
+    - rebuild-docker
 
 - name: reboot
   command: shutdown -r now "Ansible updated grub"
@@ -34,23 +40,33 @@
   sudo: yes
   ignore_errors: true
   when: grubbed | changed
+  tags:
+    - rebuild-docker
 
 - name: wait for server to relaunch
   local_action: wait_for host={{ ansible_ssh_host }} state=started
   when: grubbed | changed
+  tags:
+    - rebuild-docker
 
 # This installs the linux-image-extra package for the *current* kernel
 - name: install linux-image-extra
   apt: name=linux-image-extra-{{ ansible_kernel }}
+  tags:
+    - rebuild-docker
 
 - name: see if HTTPS transport is already present
   stat: path=/usr/lib/apt/methods/https get_md5=false
   register: https_transport_file
+  tags:
+    - rebuild-docker
 
 - name: ensure HTTPS transport is available to apt
   apt: update_cache=yes cache_valid_time=600 name=apt-transport-https
   sudo: yes
   when: not https_transport_file.stat.exists
+  tags:
+    - rebuild-docker
 
 - name: ensure the docker apt key is trusted
   apt_key:
@@ -58,26 +74,36 @@
     id: 36A1D7869245C8950F966E92D8576A8BA88D21E9
     state: present
   sudo: yes
+  tags:
+    - rebuild-docker
 
 - name: ensure the docker apt repository is present
   apt_repository:
     repo: deb https://get.docker.com/ubuntu docker main
     state: present
   sudo: yes
+  tags:
+    - rebuild-docker
 
 #1.7.1
 - name: install docker
   apt: update_cache=yes name=lxc-docker-1.7.1
   sudo: yes
+  tags:
+    - rebuild-docker
 
 - name: install docker configuration
   template: src=docker_config dest=/etc/default/docker mode=0644
   sudo: yes
+  tags:
+    - rebuild-docker
 
 - name: create docker TLS directory
   file: path={{ docker_tls_path }} state=directory
   sudo: yes
   when: docker_client_tls or docker_server_tls
+  tags:
+    - rebuild-docker
 
 - name: install docker TLS credentials
   template: src={{ item.from }} dest={{ item.to }} mode=0644
@@ -89,10 +115,14 @@
     - from: cert.pem.j2
       to: "{{ docker_tls_path }}/cert.pem"
   when: docker_client_tls or docker_server_tls
+  tags:
+    - rebuild-docker
 
 - name: restart docker
   shell: service docker restart
   sudo: yes
+  tags:
+    - rebuild-docker
 
 - name: docker-py
   pip: name=docker-py state=present version=1.1.0
@@ -112,6 +142,8 @@
 
 - name: turn off docker cleanup cronjob
   cron: name="docker cleanup" state=absent
+  tags:
+    - rebuild-docker
 
 - name: pull docker images
   command: docker pull {{ item }}
@@ -120,8 +152,10 @@
   tags:
     - rebuild-docker
 
-- name: run docker cleanup cronjob
+- name: create cronjob docker-cleanup
   cron: name="docker cleanup" minute=15 user="root" job="/usr/local/sbin/docker-cleanup"
+  tags:
+  - rebuild-docker
 
 - name: install docker cleanup script
   copy: src=docker-cleanup dest=/usr/local/sbin/docker-cleanup mode=0744
