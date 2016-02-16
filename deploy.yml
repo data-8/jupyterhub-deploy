@@ -40,8 +40,8 @@
   - 'vars.yml'
   roles:
   - swarm
+  - restuser
   - jupyterhub
   - cull
   - stats
   - interact
-  - restuser
