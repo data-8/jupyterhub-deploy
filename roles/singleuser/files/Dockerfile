@@ -15,16 +15,19 @@ RUN sed -i \
 	-e 's@jupyterhub-singleuser@/opt/conda/bin/python3 /usr/local/bin/jupyterhub-singleuser@' \
 	/srv/singleuser/systemuser.sh
 
-RUN sed -i \
-	-e '/^backend/s/Qt4Agg/svg/' \
-	/opt/conda/lib/python3.4/site-packages/matplotlib/mpl-data/matplotlibrc
-
 RUN pip install --ignore-installed datascience==0.5.6
 RUN pip install okpy==1.5.1
 RUN pip install pypandoc
 
+# For geospatial connector
 RUN conda install --yes gdal==2.0.0 libgdal==2.0.0
 RUN pip install geopy==1.11.0
+RUN pip install pyproj==1.9.4
+RUN pip install shapely==1.5.13
+
+# This needs to run after the installation of matplotlib
+#RUN sed -i -e '/^backend/s/Qt4Agg/svg/' \
+#	/opt/conda/lib/python3.4/site-packages/matplotlib/mpl-data/matplotlibrc
 
 # Disable Python 2 kernel
 RUN mv /usr/local/share/jupyter/kernels/python2 /var/tmp/
