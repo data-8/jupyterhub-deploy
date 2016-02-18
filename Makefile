@@ -1,6 +1,8 @@
+# vim:set ts=4 shiftwidth=4 noet:
+
 DEPLOY_C="ds/deploy:2"
 
-REBUILD_TAGS=rebuild-proxy rebuild-systemuser rebuild-jupyterhub rebuild-interact rebuild-cull rebuild-swarm jupyterhub_host
+REBUILD_TAGS=rebuild-proxy rebuild-systemuser rebuild-jupyterhub rebuild-interact rebuild-cull rebuild-stats rebuild-swarm jupyterhub_host
 
 ansible:
 	curl -sO https://bootstrap.pypa.io/get-pip.py
@@ -14,6 +16,9 @@ docker:
 
 vault-password:
 	openssl rand -hex 32 > vault-password
+
+assemble_certs:
+	script/assemble_certs
 
 root_logins:
 	script/enable-root-logins
@@ -33,7 +38,7 @@ run:
 deploy:
 	ansible-vault encrypt --vault-password-file vault-password secrets.vault.yml
 	ansible-vault encrypt --vault-password-file vault-password users.vault.yml
-	script/assemble_certs
+	#script/assemble_certs
 	script/deploy
 
 retry:
@@ -43,5 +48,5 @@ clean:
 	docker rm $(shell docker ps -n=1 -q)
 
 $(REBUILD_TAGS):
-	script/assemble_certs
+	#script/assemble_certs
 	script/deploy -t $@
