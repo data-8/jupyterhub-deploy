@@ -51,7 +51,7 @@
 
 # This installs the linux-image-extra package for the *current* kernel
 - name: install linux-image-extra
-  apt: name=linux-image-extra-{{ ansible_kernel }}
+  shell: apt-get -y install linux-image-extra-$(uname -r)
   tags:
     - rebuild-docker
 
@@ -104,6 +104,7 @@
   when: docker_client_tls or docker_server_tls
   tags:
     - rebuild-docker
+    - install-certs
 
 - name: install docker TLS credentials
   template: src={{ item.from }} dest={{ item.to }} mode=0644
@@ -117,12 +118,14 @@
   when: docker_client_tls or docker_server_tls
   tags:
     - rebuild-docker
+    - install-certs
 
 - name: restart docker
   shell: service docker restart
   sudo: yes
   tags:
     - rebuild-docker
+    - install-certs
 
 - name: docker-py
   pip: name=docker-py state=present version=1.1.0
