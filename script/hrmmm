@@ -43,7 +43,7 @@ def wtf(users, containers):
     """cull idle single-user servers"""
     container_names = list(
         # containers are named like /nodeNN/jupyter-username
-        map(lambda x: x['Names'][0].split('/')[-1].split('-')[-1],
+        map(lambda x: x['Names'][0].split('/')[-1].split('-', 1)[-1],
         containers)
     )
 
@@ -53,12 +53,12 @@ def wtf(users, containers):
         # servers are named like "/user/username"
         servers.append(escaped_name(user['server'].split('/')[-1]))
 
-    print("Found active containers for users with no hub server:")
+    print("Active containers for users with no hub server:")
     print(' '.join(list(set(container_names) - set(servers))))
 
     print()
 
-    print("Found hub servers with no running container:")
+    print("Hub servers with no running container:")
     print(' '.join(list(set(servers) - set(container_names))))
 
 if __name__ == '__main__':
