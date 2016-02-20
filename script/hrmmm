@@ -31,7 +31,7 @@ def get_hub_users(url, api_token):
     r = requests.get(url + '/api/users', headers=auth_header)
     return r.json()
 
-def wtf(users, containers):
+def hrmmm(users, containers):
     """cull idle single-user servers"""
     container_names = list(
         # containers are named like /nodeNN/jupyter-username
@@ -75,4 +75,4 @@ if __name__ == '__main__':
     swarm = docker.Client(base_url=args.swarm, tls=tls_config)
     containers = swarm.containers()
 
-    wtf(users, containers)
+    hrmmm(users, containers)
