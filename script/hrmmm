@@ -1,18 +1,10 @@
 #!/usr/bin/python3
-"""script to cull idle single-user servers
-
-Caveats:
-
-last_activity is not updated with high frequency,
-so cull timeout should be greater than the sum of:
-
-- single-user websocket ping interval (default: 30s)
-- JupyterHub.last_activity_interval (default: 5 minutes)
+"""Show where the hub and swarm disagree.
 
 Generate an API token and store it in `JPY_API_TOKEN`:
 
-    export JPY_API_TOKEN=`jupyterhub token`
-    culler [--url=http://127.0.0.1:8081/hub] --username=USERNAME
+    export JPY_API_TOKEN=`docker exec jupyterhub jupyterhub token -f /srv/jupyterhub/jupyterhub_config.py some_jupyterhub_admin`
+    hrmmm [--url=http://10.0.0.6:8081/hub] [--swarm=https://127.0.0.1:2376]
 """
 
 import os
