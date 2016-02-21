@@ -23,5 +23,13 @@
   apt: name=mlocate state=absent
   sudo: yes
 
+- name: install linux-image-extra.sh script
+  copy: src=linux-image-extra.sh dest=/usr/local/sbin/linux-image-extra.sh mode=0755
+  sudo: yes
+
+- name: create cronjob linux-image-extra
+  cron: name="linux-image-extra" minute=10 user="root" job="/usr/local/sbin/linux-image-extra.sh"
+  sudo: yes
+
 - include: ssh.yml
 - include: python.yml
