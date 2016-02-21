@@ -1,13 +1,17 @@
 #!/usr/bin/python3
 """Show where the hub and swarm disagree.
 
-Generate an API token and store it in `JPY_API_TOKEN`:
+Generate an API token and store it in the `JPY_API_TOKEN` environment
+variable or in ~/.jupyterhub-token. Create the token with:
 
-    export JPY_API_TOKEN=`docker exec jupyterhub jupyterhub token -f /srv/jupyterhub/jupyterhub_config.py some_jupyterhub_admin`
+    docker exec jupyterhub jupyterhub token -f \
+        /srv/jupyterhub/jupyterhub_config.py some_jupyterhub_admin`
+
     hrmmm [--url=http://10.0.0.6:8081/hub] [--swarm=https://127.0.0.1:2376]
 """
 
 import os
+import sys
 import argparse
 import requests
 import docker
@@ -62,8 +66,17 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     
-    api_token = os.environ['JPY_API_TOKEN']
-    
+    api_token_file = os.path.join(os.environ['HOME'], '.jupyterhub-token')
+    if os.path.exists(api_token_file):
+        api_token = open(api_token_file).read().strip()
+    else:
+        try:
+            api_token = os.environ['JPY_API_TOKEN']
+        except KeyError as e:
+            print('You must set the JPY_API_TOKEN environment variable.')
+            print('export JPY_API_TOKEN=`docker exec jupyterhub jupyterhub token -f /srv/jupyterhub/jupyterhub_config.py a_jhub_admin`')
+            sys.exit(1)
+
     # Get users from the hub
     users = get_hub_users(args.url, api_token)
 
