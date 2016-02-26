@@ -1,4 +1,8 @@
+# vim:set ts=4 shiftwidth=4 noet:
+
 DEPLOY_C="ds/deploy:2"
+
+REBUILD_TAGS=rebuild-proxy rebuild-systemuser rebuild-jupyterhub rebuild-interact rebuild-cull rebuild-stats rebuild-swarm jupyterhub_host
 
 ansible:
 	curl -sO https://bootstrap.pypa.io/get-pip.py
@@ -12,6 +16,9 @@ docker:
 
 vault-password:
 	openssl rand -hex 32 > vault-password
+
+assemble_certs:
+	script/assemble_certs
 
 root_logins:
 	script/enable-root-logins
@@ -40,26 +47,6 @@ retry:
 clean:
 	docker rm $(shell docker ps -n=1 -q)
 
-rebuild-proxy:
+$(REBUILD_TAGS):
 	#script/assemble_certs
 	script/deploy -t $@
-
-rebuild-systemuser:
-	#script/assemble_certs
-	script/deploy -t $@
-
-rebuild-jupyterhub:
-	#script/assemble_certs
-	script/deploy -t $@
-
-rebuild-interact:
-	#script/assemble_certs
-	script/deploy -t $@
-
-rebuild-cull:
-	#script/assemble_certs
-	script/deploy -t $@
-
-jupyterhub_host:
-	#script/assemble_certs
-	script/deploy -l $@

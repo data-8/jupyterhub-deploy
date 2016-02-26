@@ -1,0 +1,91 @@
+#!/usr/bin/python3
+"""Show where the hub and swarm disagree.
+
+Generate an API token and store it in the `JPY_API_TOKEN` environment
+variable or in ~/.jupyterhub-token. Create the token with:
+
+    docker exec jupyterhub jupyterhub token -f \
+        /srv/jupyterhub/jupyterhub_config.py some_jupyterhub_admin`
+
+    hrmmm [--url=http://10.0.0.6:8081/hub] [--swarm=https://127.0.0.1:2376]
+"""
+
+import os
+import sys
+import argparse
+import requests
+import docker
+import string
+from escapism import escape # pip install escapism
+_container_prefix = 'jupyter'
+_container_safe_chars = set(string.ascii_letters + string.digits + '-')
+_container_escape_char = '_'
+
+
+def escaped_name(name):
+    '''dockerspawner escapes usernames in container names.
+    https://github.com/jupyter/dockerspawner/commit/47bd421672b5ad4de243e15cdbddd641ef4a16c8#diff-aea35dfecb2dfc5af9d6dd74aef40faf
+    '''
+    return escape(name, safe=_container_safe_chars,
+            escape_char=_container_escape_char,
+    )
+
+def get_hub_users(url, api_token):
+    auth_header = { 'Authorization': 'token %s' % api_token }
+    r = requests.get(url + '/api/users', headers=auth_header)
+    return r.json()
+
+def hrmmm(users, containers):
+    """cull idle single-user servers"""
+    container_names = list(
+        # containers are named like /nodeNN/jupyter-username
+        map(lambda x: x['Names'][0].split('/')[-1].split('-', 1)[-1],
+        containers)
+    )
+
+    servers = []
+    for user in users:
+        if not user['server']: continue
+        # servers are named like "/user/username"
+        servers.append(escaped_name(user['server'].split('/')[-1]))
+
+    print("Active containers for users with no hub server:")
+    print(' '.join(list(set(container_names) - set(servers))))
+
+    print()
+
+    print("Hub servers with no running container:")
+    print(' '.join(list(set(servers) - set(container_names))))
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Cull user servers.')
+    parser.add_argument("--url", default="http://10.0.0.6:8081/hub",
+        help="The JupyterHub API URL")
+    parser.add_argument("--swarm", default="https://127.0.0.1:2376",
+        help="swarm address")
+
+    args = parser.parse_args()
+    
+    api_token_file = os.path.join(os.environ['HOME'], '.jupyterhub-token')
+    if os.path.exists(api_token_file):
+        api_token = open(api_token_file).read().strip()
+    else:
+        try:
+            api_token = os.environ['JPY_API_TOKEN']
+        except KeyError as e:
+            print('You must set the JPY_API_TOKEN environment variable.')
+            print('export JPY_API_TOKEN=`docker exec jupyterhub jupyterhub token -f /srv/jupyterhub/jupyterhub_config.py a_jhub_admin`')
+            sys.exit(1)
+
+    # Get users from the hub
+    users = get_hub_users(args.url, api_token)
+
+    # Get containers from the swarm
+    tls_config = docker.tls.TLSConfig(verify='/root/.docker/ca.pem',
+        client_cert=('/root/.docker/cert.pem', '/root/.docker/key.pem'),
+        assert_hostname=False
+    )
+    swarm = docker.Client(base_url=args.swarm, tls=tls_config)
+    containers = swarm.containers()
+
+    hrmmm(users, containers)

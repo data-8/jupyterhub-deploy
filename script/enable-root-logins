@@ -43,5 +43,6 @@ for host in inv.get_group('all').get_hosts():
 		continue
 	keyname = host.name
 	ip = host.vars['fqdn']
+	print(" ".join(SSH + ["ubuntu@"+ip, REMOTE_CMD]))
 	subprocess.call(SSH + ["ubuntu@"+ip, REMOTE_CMD])
 	f.write(HOST_FMT % (host.name, ip))

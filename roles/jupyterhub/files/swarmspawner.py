@@ -32,9 +32,12 @@ class SwarmSpawner(SystemUserSpawner):
         self.log.info("DriverStatus: {}".format(info['DriverStatus']))
         num_nodes = int(info['DriverStatus'][3][1])
         node_info = info['DriverStatus'][4::5]
+        self.log.info('node_info: ' + str(node_info))
         self.node_info = {}
         for i in range(num_nodes):
             node, ip_port = node_info[i]
+            if node == '':
+                self.log.info('name for ip_port %s is empty.' % ip_port)
             self.node_info[node] = ip_port.split(":")[0]
         self.log.debug("Swarm nodes are: {}".format(self.node_info))
 
