@@ -14,7 +14,8 @@ fi
 
 VM_NAME="$1"
 
-azure vm create \
+AZURE="/root/node_modules/azure-cli/bin/azure"
+${AZURE} vm create \
         -v \
         --json \
         --admin-username              ubuntu \
@@ -31,5 +32,5 @@ azure vm create \
         --location                    "West US" \
         --os-type                     Linux \
         --image-urn        canonical:ubuntuserver:14.04.2-LTS:latest && \
-azure network nic set --network-security-group-name data8nsg0 \
+${AZURE} network nic set --network-security-group-name data8nsg0 \
         data8-0 nic-${VM_NAME}

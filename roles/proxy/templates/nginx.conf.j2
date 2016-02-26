@@ -83,6 +83,9 @@ http {
             proxy_read_timeout 86400;
 
         }
+
+	# Why is this happening now ; pre-0.4.1
+	#rewrite ^/hub/login /hub/oauth_login last;
     }
 
 }

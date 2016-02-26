@@ -69,6 +69,7 @@ certificates.bak
 secrets.vault.yml
 users.vault.yml
 ssh_config
+ssh_config.bak
 
 .swp
 

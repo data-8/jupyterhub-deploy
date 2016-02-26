@@ -7,6 +7,7 @@ import sys
 # Base configuration
 c.JupyterHub.log_level = "INFO"
 c.JupyterHub.db_url = 'sqlite:////srv/jupyterhub_db/jupyterhub.sqlite'
+c.JupyterHub.proxy_check_interval = 30
 
 # Configure the authenticator
 c.JupyterHub.authenticator_class = 'docker_oauth.DockerOAuthenticator'
@@ -23,6 +24,10 @@ c.DockerSpawner.tls_key = '{{ docker_tls_path }}/key.pem'
 c.DockerSpawner.remove_containers = True
 #c.Spawner.start_timeout = 300
 #c.Spawner.http_timeout = 150
+
+# Possibly prevent NFS locking issues with sqlite
+# https://github.com/jupyter/dockerspawner/issues/46
+c.HistoryManager.enabled = False
 
 # The docker instances need access to the Hub, so the default loopback port
 # doesn't work:

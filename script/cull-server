@@ -1,0 +1,12 @@
+#!/bin/bash
+
+TOKEN=$1
+USER=$2
+
+if [ -z "$USER" ]; then
+	echo Usage $0 TOKEN USER
+	exit 1
+fi
+
+curl -H "Authorization: token $TOKEN" -XDELETE \
+	http://10.0.0.6:8081/hub/api/users/${USER}/server

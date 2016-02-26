@@ -1,14 +1,4 @@
 ---
-- name: stop and remove swarm container
-  docker:
-    docker_api_version: "{{ docker_api_version }}"
-    state: absent
-    image: swarm
-    name: swarm
-  sudo: yes
-  tags:
-    - rebuild-swarm
-
 - name: create the /srv/swarm directory
   file: path=/srv/swarm state=directory
   sudo: yes
@@ -29,6 +19,16 @@
 
 - name: build swarm image
   shell: docker build -t swarm /srv/swarm
+  sudo: yes
+  tags:
+    - rebuild-swarm
+
+- name: stop and remove swarm container
+  docker:
+    docker_api_version: "{{ docker_api_version }}"
+    state: absent
+    image: swarm
+    name: swarm
   sudo: yes
   tags:
     - rebuild-swarm

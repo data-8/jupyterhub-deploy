@@ -1,15 +1,17 @@
-FROM jupyter/jupyterhub
+FROM jupyter/jupyterhub:0.4.1
 
 MAINTAINER Ryan Lovett <rylo@berkeley.edu>
 
 # We need to update pip, otherwise the version of requests that
 # is installed by dockerspawner breaks things.
-#RUN pip3 install --upgrade pip
+RUN pip install --upgrade pip
+
+RUN conda install ipython
 
 # Install dockerspawner and oauthenticator
-RUN /usr/local/bin/pip3 install git+git://github.com/docker/docker-py.git@1e916a1e83af49bc8d2fd5026ca9746129d1cebc
-RUN /usr/local/bin/pip3 install git+git://github.com/jupyter/dockerspawner.git@c7a3f6d75adeaa67116ff237984c45af57e0fa93
-RUN /usr/local/bin/pip3 install git+git://github.com/ryanlovett/jh-google-oauthenticator.git
+RUN pip install git+git://github.com/docker/docker-py.git@1e916a1e83af49bc8d2fd5026ca9746129d1cebc
+RUN pip install git+git://github.com/jupyter/dockerspawner.git@c7a3f6d75adeaa67116ff237984c45af57e0fa93
+RUN pip install git+git://github.com/ryanlovett/jh-google-oauthenticator.git
 
 # Add variable to allow connecting to the docker swarm
 ENV DOCKER_HOST https://127.0.0.1:2376
@@ -28,3 +30,5 @@ ADD docker_oauth.py /srv/oauthenticator/docker_oauth.py
 
 # set working directory to the jupyterhub directory
 WORKDIR /srv/jupyterhub
+
+#CMD ["jupyterhub", "-f", "/srv/jupyterhub/jupyterhub_config.py"]

@@ -39,6 +39,14 @@ name_map = {
     "jupyterhub_node2": "jupyterhub_node2",
     "jupyterhub_node3": "jupyterhub_node3",
     "jupyterhub_node4": "jupyterhub_node4",
+    "jupyterhub_node5": "jupyterhub_node5",
+    "jupyterhub_node6": "jupyterhub_node6",
+    "jupyterhub_node7": "jupyterhub_node7",
+    "jupyterhub_node8": "jupyterhub_node8",
+    "jupyterhub_node9": "jupyterhub_node9",
+    "jupyterhub_node10": "jupyterhub_node10",
+    "jupyterhub_node11": "jupyterhub_node11",
+    "jupyterhub_node12": "jupyterhub_node12",
     "proxy_server": "proxy_server",
 }
 

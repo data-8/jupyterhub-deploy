@@ -31,7 +31,7 @@ run:
 deploy:
 	ansible-vault encrypt --vault-password-file vault-password secrets.vault.yml
 	ansible-vault encrypt --vault-password-file vault-password users.vault.yml
-	script/assemble_certs
+	#script/assemble_certs
 	script/deploy
 
 retry:
@@ -41,25 +41,25 @@ clean:
 	docker rm $(shell docker ps -n=1 -q)
 
 rebuild-proxy:
-	script/assemble_certs
+	#script/assemble_certs
 	script/deploy -t $@
 
 rebuild-systemuser:
-	script/assemble_certs
+	#script/assemble_certs
 	script/deploy -t $@
 
 rebuild-jupyterhub:
-	script/assemble_certs
+	#script/assemble_certs
 	script/deploy -t $@
 
 rebuild-interact:
-	script/assemble_certs
+	#script/assemble_certs
 	script/deploy -t $@
 
 rebuild-cull:
-	script/assemble_certs
+	#script/assemble_certs
 	script/deploy -t $@
 
 jupyterhub_host:
-	script/assemble_certs
+	#script/assemble_certs
 	script/deploy -l $@

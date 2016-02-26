@@ -42,7 +42,7 @@ class SwarmSpawner(SystemUserSpawner):
         if extra_host_config is None:
             extra_host_config = {}
         if 'mem_limit' not in extra_host_config:
-            extra_host_config['mem_limit'] = '3g'
+            extra_host_config['mem_limit'] = '2g'
 
         # specify extra creation options
         if extra_create_kwargs is None:
@@ -51,6 +51,7 @@ class SwarmSpawner(SystemUserSpawner):
             extra_create_kwargs['working_dir'] = self.homedir
 
         # start the container
+        self.log.info("starting container: image:{}".format(image))
         yield DockerSpawner.start(
             self, image=image, extra_create_kwargs=extra_create_kwargs,
             extra_host_config=extra_host_config)
