@@ -1,0 +1,72 @@
+FROM debian:jessie
+
+MAINTAINER Jupyter Project <jupyter@googlegroups.com>
+
+# install nodejs, utf8 locale
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get -y update && \
+    apt-get -y upgrade && \
+    apt-get -y install npm nodejs nodejs-legacy wget locales git &&\
+    /usr/sbin/update-locale LANG=C.UTF-8 && \
+    locale-gen C.UTF-8 && \
+    apt-get remove -y locales && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+ENV LANG C.UTF-8
+
+# install Python with conda
+RUN wget -q https://repo.continuum.io/miniconda/Miniconda3-3.9.1-Linux-x86_64.sh -O /tmp/miniconda.sh  && \
+    bash /tmp/miniconda.sh -f -b -p /opt/conda && \
+    /opt/conda/bin/conda install --yes python=3.5 sqlalchemy tornado jinja2 traitlets requests pip && \
+    /opt/conda/bin/pip install --upgrade pip && \
+    rm /tmp/miniconda.sh
+ENV PATH=/opt/conda/bin:$PATH
+
+# install js dependencies
+RUN npm install -g configurable-http-proxy && rm -rf ~/.npm
+
+WORKDIR /srv/
+ADD . /srv/jupyterhub
+WORKDIR /srv/jupyterhub/
+
+RUN python setup.py js && pip install . && \
+    rm -rf node_modules ~/.cache ~/.npm
+
+WORKDIR /srv/jupyterhub/
+
+# Derivative containers should add jupyterhub config,
+# which will be used when starting the application.
+
+EXPOSE 8000
+
+ONBUILD ADD jupyterhub_config.py /srv/jupyterhub/jupyterhub_config.py
+CMD ["jupyterhub", "-f", "/srv/jupyterhub/jupyterhub_config.py"]
+
+# ======================
+# Our changes begin here
+# ======================
+RUN conda install ipython
+
+# Install dockerspawner and oauthenticator
+#RUN pip install git+git://github.com/docker/docker-py.git@1e916a1e83af49bc8d2fd5026ca9746129d1cebc
+RUN pip install git+git://github.com/docker/docker-py.git@1.7.1
+RUN pip install git+git://github.com/jupyter/dockerspawner.git@0.2.0
+RUN pip install git+git://github.com/ryanlovett/jh-google-oauthenticator.git
+
+# Add variable to allow connecting to the docker swarm
+ENV DOCKER_HOST https://127.0.0.1:2376
+
+# Create oauthenticator directory -- this is where we'll put the userlist later
+RUN mkdir /srv/oauthenticator
+ENV OAUTHENTICATOR_DIR /srv/oauthenticator
+RUN chmod 700 /srv/oauthenticator
+
+# add the userlist, spawner, and authenticator
+ADD userlist /srv/oauthenticator/userlist
+ADD swarmspawner.py /srv/oauthenticator/swarmspawner.py
+ADD docker_oauth.py /srv/oauthenticator/docker_oauth.py
+
+#RUN sed -i -e 's/^<\/body>/&\n  <div><p style="padding:1em; position:absolute; left:0px; bottom:0px;">This computing environment is provided through the generous support of the Microsoft Azure platform and the Intel Corporation.<\/p><\/div>\n&/' /usr/local/share/jupyter/hub/templates/page.html
+
+# set working directory to the jupyterhub directory
+WORKDIR /srv/jupyterhub

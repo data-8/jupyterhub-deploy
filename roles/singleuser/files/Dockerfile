@@ -27,7 +27,7 @@ RUN pip install shapely==1.5.13
 
 # This needs to run after the installation of matplotlib
 #RUN sed -i -e '/^backend/s/Qt4Agg/svg/' \
-#	/opt/conda/lib/python3.4/site-packages/matplotlib/mpl-data/matplotlibrc
+#       /opt/conda/lib/python3.4/site-packages/matplotlib/mpl-data/matplotlibrc
 
 # Disable Python 2 kernel
 RUN mv /usr/local/share/jupyter/kernels/python2 /var/tmp/

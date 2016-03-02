@@ -22,6 +22,12 @@ c.SystemUserSpawner.container_image = 'systemuser'
 c.DockerSpawner.tls_cert = '{{ docker_tls_path }}/cert.pem'
 c.DockerSpawner.tls_key = '{{ docker_tls_path }}/key.pem'
 c.DockerSpawner.remove_containers = True
+#c.Spawner.start_timeout = 300
+#c.Spawner.http_timeout = 150
+
+# Possibly prevent NFS locking issues with sqlite
+# https://github.com/jupyter/dockerspawner/issues/46
+c.HistoryManager.enabled = False
 
 # Possibly prevent NFS locking issues with sqlite
 # https://github.com/jupyter/dockerspawner/issues/46

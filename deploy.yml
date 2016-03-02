@@ -26,6 +26,7 @@
   - nfs_server
 
 - hosts: jupyterhub_nodes
+  serial: 100%
   vars_files:
   - 'secrets.vault.yml'
   - 'vars.yml'
