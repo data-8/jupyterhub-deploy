@@ -15,7 +15,7 @@ RUN sed -i \
 	-e 's@jupyterhub-singleuser@/opt/conda/bin/python3 /usr/local/bin/jupyterhub-singleuser@' \
 	/srv/singleuser/systemuser.sh
 
-RUN pip install --ignore-installed datascience==0.5.6
+RUN pip install --ignore-installed datascience==0.5.10
 RUN pip install okpy==1.5.1
 RUN pip install pypandoc
 
