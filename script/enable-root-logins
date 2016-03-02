@@ -21,11 +21,12 @@ if len(sys.argv) > 1:
 
 # To readily ssh to hosts, alias or run ssh as
 # "ssh -F ~/jupyterhub-deploy/ssh_config"
-CONFIG_FILE = '/home/ubuntu/jupyterhub-deploy/ssh_config'
-HOST_FMT = 'Host %s\nUser=root\nHostName=%s\n\n'
+CONFIG_FILE = '/home/ubuntu/jupyterhub-deploy/ssh_config.new'
+HOST_FMT = 'Host {}\nUser=root\nHostName={}\n\n'
+
 if os.path.exists(CONFIG_FILE):
 	os.rename(CONFIG_FILE, CONFIG_FILE + '.bak')
-f = open(CONFIG_FILE, 'a')
+f = open(CONFIG_FILE, 'w')
 
 DEBUG = False
 
@@ -37,12 +38,17 @@ vault_password = open('../jupyterhub-deploy/vault-password').read().strip()
 inv = ansible.inventory.Inventory(
 	host_list='../jupyterhub-deploy/inventory',
 	vault_password=vault_password)
+
 for host in inv.get_group('all').get_hosts():
 	# If the user specified hosts and this isn't one of them
 	if len(arg_hosts) > 0 and host.name not in arg_hosts:
 		continue
 	keyname = host.name
 	ip = host.vars['fqdn']
+	f.write(HOST_FMT.format(host.name, ip))
+
 	print(" ".join(SSH + ["ubuntu@"+ip, REMOTE_CMD]))
 	subprocess.call(SSH + ["ubuntu@"+ip, REMOTE_CMD])
-	f.write(HOST_FMT % (host.name, ip))
+
+f.flush()
+f.close()
