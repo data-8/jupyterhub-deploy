@@ -23,6 +23,10 @@ c.DockerSpawner.tls_cert = '{{ docker_tls_path }}/cert.pem'
 c.DockerSpawner.tls_key = '{{ docker_tls_path }}/key.pem'
 c.DockerSpawner.remove_containers = True
 
+# Possibly prevent NFS locking issues with sqlite
+# https://github.com/jupyter/dockerspawner/issues/46
+c.HistoryManager.enabled = False
+
 # The docker instances need access to the Hub, so the default loopback port
 # doesn't work:
 c.JupyterHub.hub_ip = '{{ servicenet_ip }}'
