@@ -10,6 +10,7 @@ import subprocess as sp
 import os
 import contextlib
 from collections import OrderedDict
+import ansible.inventory
 
 ################################################################################
 
@@ -33,46 +34,10 @@ ca_name = "ca"
 # in the hosts file, the keys are the base name of the certificate (e.g., if
 # the certificate and key are `hub-cert.pem` and `hub-key.pem`, respectively,
 # then the base name is 'hub'.
-name_map = {
-    "jupyterhub_host": "jupyterhub_host",
-    "jupyterhub_node1": "jupyterhub_node1",
-    "jupyterhub_node2": "jupyterhub_node2",
-    "jupyterhub_node3": "jupyterhub_node3",
-    "jupyterhub_node4": "jupyterhub_node4",
-    "jupyterhub_node5": "jupyterhub_node5",
-    "jupyterhub_node6": "jupyterhub_node6",
-    "jupyterhub_node7": "jupyterhub_node7",
-    "jupyterhub_node8": "jupyterhub_node8",
-    "jupyterhub_node8": "jupyterhub_node8",
-    "jupyterhub_node9": "jupyterhub_node9",
-    "jupyterhub_node10": "jupyterhub_node10",
-    "jupyterhub_node11": "jupyterhub_node11",
-    "jupyterhub_node12": "jupyterhub_node12",
-    "jupyterhub_node13": "jupyterhub_node13",
-    "jupyterhub_node14": "jupyterhub_node14",
-    "jupyterhub_node15": "jupyterhub_node15",
-    "jupyterhub_node16": "jupyterhub_node16",
-    "jupyterhub_node17": "jupyterhub_node17",
-    "jupyterhub_node18": "jupyterhub_node18",
-    "jupyterhub_node19": "jupyterhub_node19",
-    "jupyterhub_node20": "jupyterhub_node20",
-    "jupyterhub_node21": "jupyterhub_node21",
-    "jupyterhub_node22": "jupyterhub_node22",
-    "jupyterhub_node23": "jupyterhub_node23",
-    "jupyterhub_node24": "jupyterhub_node24",
-    "jupyterhub_node25": "jupyterhub_node25",
-    "jupyterhub_node26": "jupyterhub_node26",
-    "jupyterhub_node27": "jupyterhub_node27",
-    "jupyterhub_node28": "jupyterhub_node28",
-    "jupyterhub_node29": "jupyterhub_node29",
-    "jupyterhub_node30": "jupyterhub_node30",
-    "jupyterhub_node31": "jupyterhub_node31",
-    "jupyterhub_node32": "jupyterhub_node32",
-    "jupyterhub_node33": "jupyterhub_node33",
-    "jupyterhub_node34": "jupyterhub_node34",
-    "jupyterhub_node35": "jupyterhub_node35",
-    "proxy_server": "proxy_server",
-}
+vault_password = open('../jupyterhub-deploy/vault-password').read().strip()
+inv = ansible.inventory.Inventory(
+        host_list='../jupyterhub-deploy/inventory',
+        vault_password=vault_password)
 
 ################################################################################
 
@@ -103,9 +68,8 @@ def vault(filename):
         "--vault-password-file", vault_password_file
     ])
 
-# TODO: read inventory file instead
-for host in name_map:
-    filename = os.path.join("host_vars", host)
+for host in inv.get_group('all').get_hosts():
+    filename = os.path.join("host_vars", host.name)
     with vault(filename):
         # read the secrets in
         if os.path.exists(filename):
@@ -119,15 +83,15 @@ for host in name_map:
             secrets["docker_ca_cert"] = literal(fh.read())
 
         # save the TLS certificate
-        with open(os.path.join(certificates_dir, '{}-cert.pem'.format(name_map[host])), 'r') as fh:
+        with open(os.path.join(certificates_dir, '{}-cert.pem'.format(host.name)), 'r') as fh:
             secrets["docker_tls_cert"] = literal(fh.read())
 
         # save the TLS key
-        with open(os.path.join(certificates_dir, '{}-key.pem'.format(name_map[host])), 'r') as fh:
+        with open(os.path.join(certificates_dir, '{}-key.pem'.format(host.name)), 'r') as fh:
             secrets["docker_tls_key"] = literal(fh.read())
 
 
-        if host == 'proxy_server':
+        if host.name == 'proxy_server':
             # set the certificate
             fh = open(os.path.join(proxy_certificates_dir, 'proxy-server.crt'), "r")
             secrets["ssl_cert"] = literal(fh.read())
