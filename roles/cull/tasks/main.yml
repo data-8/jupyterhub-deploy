@@ -18,6 +18,14 @@
   tags:
     rebuild-cull
 
+- name: install cull_idle_servers.py
+  copy:
+    src: cull_idle_servers.py
+    dest: /srv/cull/cull_idle_servers.py
+  sudo: yes
+  tags:
+    rebuild-cull
+
 - name: copy the Dockerfile to /srv/cull
   template: src=Dockerfile.j2 dest=/srv/cull/Dockerfile
   sudo: yes
