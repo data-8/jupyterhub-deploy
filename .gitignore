@@ -70,6 +70,7 @@ secrets.vault.yml
 users.vault.yml
 ssh_config
 ssh_config.bak
+host_vars/
 
 .swp
 
