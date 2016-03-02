@@ -29,10 +29,6 @@ c.DockerSpawner.remove_containers = True
 # https://github.com/jupyter/dockerspawner/issues/46
 c.HistoryManager.enabled = False
 
-# Possibly prevent NFS locking issues with sqlite
-# https://github.com/jupyter/dockerspawner/issues/46
-c.HistoryManager.enabled = False
-
 # The docker instances need access to the Hub, so the default loopback port
 # doesn't work:
 c.JupyterHub.hub_ip = '{{ servicenet_ip }}'
