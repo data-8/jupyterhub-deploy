@@ -74,3 +74,6 @@ host_vars/
 
 .swp
 
+# Ansible and docker install scripts
+get-pip.py
+install-docker.sh
