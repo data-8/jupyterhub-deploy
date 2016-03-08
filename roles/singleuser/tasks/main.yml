@@ -20,6 +20,14 @@
   tags:
     - rebuild-systemuser
 
+- name: copy systemuser.sh to the systemuser directory
+  copy:
+    src: systemuser.sh
+    dest: /srv/systemuser/systemuser.sh
+  sudo: yes
+  tags:
+    - rebuild-systemuser
+
 - name: build systemuser image
   shell: docker build -t systemuser /srv/systemuser
   sudo: yes

@@ -5,17 +5,19 @@ RUN apt-get update && \
 	texlive-latex-extra \
 	texlive-generic-recommended
 
+ADD systemuser.sh /srv/systemuser.sh
+
 # This isn't done by conda? Otherwise the container will fail to start with
 # "/usr/bin/env: python3: No such file or directory" since
 # /srv/singleuser/systemuser.sh (/bin/sh) launches jupyterhub-singleuser
 # which is /usr/bin/env python3.
-RUN echo 'export PATH=/opt/conda/bin:${PATH}' >> /root/.bashrc
-ENV PATH /opt/conda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-RUN sed -i \
-	-e 's@jupyterhub-singleuser@/opt/conda/bin/python3 /usr/local/bin/jupyterhub-singleuser@' \
-	/srv/singleuser/systemuser.sh
+#RUN echo 'export PATH=/opt/conda/bin:${PATH}' >> /root/.bashrc
+#ENV PATH /opt/conda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+#RUN sed -i \
+#	-e 's@jupyterhub-singleuser@/opt/conda/bin/python3 /usr/local/bin/jupyterhub-singleuser@' \
+#	/srv/singleuser/systemuser.sh
 
-RUN pip install --ignore-installed datascience==0.5.10
+RUN pip install --ignore-installed datascience==0.5.11
 RUN pip install okpy==1.5.1
 RUN pip install pypandoc
 
