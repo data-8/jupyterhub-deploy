@@ -7,7 +7,7 @@ REBUILD_TAGS=rebuild-proxy rebuild-systemuser rebuild-jupyterhub rebuild-interac
 ansible:
 	curl -sO https://bootstrap.pypa.io/get-pip.py
 	sudo python get-pip.py
-	sudo pip install ansible
+	sudo pip install 'ansible<2'
 
 docker:
 	curl -so install-docker.sh https://get.docker.com
