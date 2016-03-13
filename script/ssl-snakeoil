@@ -8,7 +8,8 @@ if [ -z "$1" ]; then
 fi
 
 if [ ! -d ./"${1}" ]; then
-	mkdir -p ./"${1}"/etc/ssl/{certs,private}
+	mkdir -p ./"${1}"/etc/ssl/certs
+	mkdir -p ./"${1}"/etc/ssl/private
 fi
 
 SSL_DIR=./${1}/etc/ssl
