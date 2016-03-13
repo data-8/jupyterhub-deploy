@@ -20,10 +20,10 @@
   tags:
     - rebuild-systemuser
 
-- name: copy systemuser.sh to the systemuser directory
+- name: copy resystemuser.sh to the systemuser directory
   copy:
-    src: systemuser.sh
-    dest: /srv/systemuser/systemuser.sh
+    src: resystemuser.sh
+    dest: /srv/systemuser/resystemuser.sh
   sudo: yes
   tags:
     - rebuild-systemuser

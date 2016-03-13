@@ -5,7 +5,7 @@ RUN apt-get update && \
 	texlive-latex-extra \
 	texlive-generic-recommended
 
-ADD systemuser.sh /srv/systemuser.sh
+ADD resystemuser.sh /srv/singleuser/resystemuser.sh
 
 RUN pip install --ignore-installed datascience==0.5.12
 RUN pip install okpy==1.5.1
@@ -19,3 +19,5 @@ RUN pip install shapely==1.5.13
 
 # Disable Python 2 kernel
 RUN mv /usr/local/share/jupyter/kernels/python2 /var/tmp/
+
+CMD ["sh", "/srv/singleuser/resystemuser.sh"]
