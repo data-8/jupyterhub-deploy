@@ -1,4 +1,4 @@
-FROM jupyter/jupyterhub:0.4.1
+FROM jupyter/jupyterhub:0.5.0
 
 MAINTAINER Ryan Lovett <rylo@berkeley.edu>
 
@@ -26,9 +26,7 @@ ADD userlist /srv/oauthenticator/userlist
 ADD swarmspawner.py /srv/oauthenticator/swarmspawner.py
 ADD docker_oauth.py /srv/oauthenticator/docker_oauth.py
 
-#RUN sed -i -e 's/^<\/body>/&\n  <div><p style="padding:1em; position:absolute; left:0px; bottom:0px;">This computing environment is provided through the generous support of the Microsoft Azure platform and the Intel Corporation.<\/p><\/div>\n&/' /usr/local/share/jupyter/hub/templates/page.html
-
 # set working directory to the jupyterhub directory
 WORKDIR /srv/jupyterhub
 
-#CMD ["jupyterhub", "-f", "/srv/jupyterhub/jupyterhub_config.py"]
+CMD ["jupyterhub", "-f", "/srv/jupyterhub/jupyterhub_config.py", "--no-ssl"]
