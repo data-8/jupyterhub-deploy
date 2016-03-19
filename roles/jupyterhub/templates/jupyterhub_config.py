@@ -8,13 +8,18 @@ import sys
 c.JupyterHub.log_level = "INFO"
 c.JupyterHub.db_url = 'sqlite:////srv/jupyterhub_db/jupyterhub.sqlite'
 c.JupyterHub.proxy_check_interval = 30
+c.JupyterHub.admin_access = True
 
-# Configure the authenticator
-c.JupyterHub.authenticator_class = 'docker_oauth.DockerOAuthenticator'
-c.DockerOAuthenticator.oauth_callback_url = os.environ['OAUTH_CALLBACK_URL']
-c.DockerOAuthenticator.create_system_users = True
-c.Authenticator.admin_users = admin = set()
+# Configure the authenticator for development (no OAuth)
+# TODO(sam): Technically it's better to clean up the env variables. For example,
+# we don't need the OAUTH_CALLBACK_URL anymore.
+
+c.LocalAuthenticator.create_system_users = True
 c.Authenticator.whitelist = whitelist = set()
+c.Authenticator.admin_users = admin = set()
+# c.JupyterHub.authenticator_class = 'docker_oauth.DockerOAuthenticator'
+# c.DockerOAuthenticator.oauth_callback_url = os.environ['OAUTH_CALLBACK_URL']
+# c.DockerOAuthenticator.create_system_users = True
 
 # Configure the spawner
 c.JupyterHub.spawner_class = 'swarmspawner.SwarmSpawner'
