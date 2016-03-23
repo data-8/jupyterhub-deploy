@@ -29,6 +29,9 @@ ADD docker_oauth.py /srv/oauthenticator/docker_oauth.py
 # set working directory to the jupyterhub directory
 WORKDIR /srv/jupyterhub
 
+# Let in everyone without password
+RUN sed -i -e '/pam_deny/s/^/#/' /etc/pam.d/common-auth
+
 RUN adduser -q --gecos "" samlau95
 
 CMD ["jupyterhub", "-f", "/srv/jupyterhub/jupyterhub_config.py", "--no-ssl"]
