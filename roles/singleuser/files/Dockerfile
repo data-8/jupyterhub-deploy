@@ -20,6 +20,9 @@ RUN pip install shapely==1.5.13
 # For ecology connector ; cboettig
 RUN conda install --yes numexpr==2.5
 
+# For humanities connector ; troland
+RUN conda install --yes nltk==3.2
+
 # Disable Python 2 kernel
 RUN mv /usr/local/share/jupyter/kernels/python2 /var/tmp/
 
