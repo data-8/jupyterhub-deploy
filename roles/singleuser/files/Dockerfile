@@ -22,6 +22,13 @@ RUN conda install --yes numexpr==2.5
 
 # For humanities connector ; troland
 RUN conda install --yes nltk==3.2
+# models
+RUN python -m nltk.downloader -d /usr/local/share/nltk_data averaged_perceptron_tagger
+RUN python -m nltk.downloader -d /usr/local/share/nltk_data maxent_ne_chunker
+# corpora
+RUN python -m nltk.downloader -d /usr/local/share/nltk_data cmudict
+RUN python -m nltk.downloader -d /usr/local/share/nltk_data wordnet
+RUN python -m nltk.downloader -d /usr/local/share/nltk_data words
 
 # Disable Python 2 kernel
 RUN mv /usr/local/share/jupyter/kernels/python2 /var/tmp/
