@@ -29,6 +29,8 @@ RUN python -m nltk.downloader -d /usr/local/share/nltk_data maxent_ne_chunker
 RUN python -m nltk.downloader -d /usr/local/share/nltk_data cmudict
 RUN python -m nltk.downloader -d /usr/local/share/nltk_data wordnet
 RUN python -m nltk.downloader -d /usr/local/share/nltk_data words
+#
+RUN python -m nltk.downloader -d /usr/local/share/nltk_data punkt
 
 # Disable Python 2 kernel
 RUN mv /usr/local/share/jupyter/kernels/python2 /var/tmp/
