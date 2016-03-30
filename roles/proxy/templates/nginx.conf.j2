@@ -43,12 +43,12 @@ http {
         access_log /var/log/nginx/access.log;
         error_log /var/log/nginx/error.log;
 
-        location ~ /hub/static/custom/(.*) {
-            alias /srv/ipython/IPython/html/static/custom/$1;
-        }
-        location ~ /user/[a-zA-Z0-9]*/static/(.*) {
-            alias {{ notebook_static_files }}$1;
-        }
+        # location ~ /hub/static/custom/(.*) {
+        #     alias /srv/ipython/IPython/html/static/custom/$1;
+        # }
+        # location ~ /user/[a-zA-Z0-9]*/static/(.*) {
+        #     alias {{ notebook_static_files }}$1;
+        # }
 
         location / {
             proxy_pass http://{{ jupyterhub_host }}:8000;
