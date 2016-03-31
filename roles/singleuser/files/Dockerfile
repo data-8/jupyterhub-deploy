@@ -31,6 +31,8 @@ RUN python -m nltk.downloader -d /usr/local/share/nltk_data wordnet
 RUN python -m nltk.downloader -d /usr/local/share/nltk_data words
 #
 RUN python -m nltk.downloader -d /usr/local/share/nltk_data punkt
+# 20160331
+RUN conda install --yes gensim==0.12.2
 
 # Disable Python 2 kernel
 RUN mv /usr/local/share/jupyter/kernels/python2 /var/tmp/
