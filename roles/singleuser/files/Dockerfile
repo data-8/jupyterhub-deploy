@@ -7,7 +7,7 @@ RUN apt-get update && \
 
 ADD resystemuser.sh /srv/singleuser/resystemuser.sh
 
-RUN pip install --ignore-installed datascience==0.5.17
+RUN pip install --ignore-installed datascience==0.5.19
 RUN pip install okpy==1.5.1
 RUN pip install pypandoc
 
