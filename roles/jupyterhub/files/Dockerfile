@@ -26,6 +26,10 @@ ADD userlist /srv/oauthenticator/userlist
 ADD swarmspawner.py /srv/oauthenticator/swarmspawner.py
 ADD docker_oauth.py /srv/oauthenticator/docker_oauth.py
 
+# Try to make sure CHP is the version with statsd
+# TODO(sam): Change this to a version once an update to CHP gets pushed to npm
+RUN npm install git+https://github.com/jupyter/configurable-http-proxy#1d24f8b1f7db0c1313bb329f804b042641082ba0 && rm -rf ~/.npm
+
 # set working directory to the jupyterhub directory
 WORKDIR /srv/jupyterhub
 
