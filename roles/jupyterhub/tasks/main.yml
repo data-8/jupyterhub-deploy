@@ -38,15 +38,25 @@
   tags:
     - rebuild-jupyterhub
 
-- name: create the jupyterhub directory
-  file: path=/srv/jupyterhub state=directory
-  sudo: yes
+- name: install jupyterhub
+  git:
+    repo: https://github.com/jupyter/jupyterhub
+    dest: /srv/jupyterhub
+    version: dfd01bbf5fdbf8bf3bb96ba19c5307c5253c7e7c
+    force: yes
   tags:
     - rebuild-jupyterhub
 
+# - name: create the jupyterhub directory
+#   file: path=/srv/jupyterhub state=directory
+#   sudo: yes
+#   tags:
+#     - rebuild-jupyterhub
+
+# Temporarily use verbose Dockerfile to allow setting CHP version
 - name: copy the Dockerfile to the jupyterhub directory
   copy:
-    src: Dockerfile
+    src: Dockerfile+
     dest: /srv/jupyterhub/Dockerfile
   sudo: yes
   tags:
