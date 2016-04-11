@@ -69,6 +69,7 @@ def vault(filename):
     ])
 
 for host in inv.get_group('all').get_hosts():
+    if host.name == 'nas': continue
     filename = os.path.join("host_vars", host.name)
     with vault(filename):
         # read the secrets in
@@ -79,8 +80,13 @@ for host in inv.get_group('all').get_hosts():
             secrets = {}
 
         # save the certificate authority
-        with open(os.path.join(certificates_dir, '{}.pem'.format(ca_name)), "r") as fh:
+        try:
+            ca = os.path.join(certificates_dir, '{}.pem'.format(ca_name))
+            fh = open(ca, "r")
             secrets["docker_ca_cert"] = literal(fh.read())
+        except Exception as e:
+            print("No such file: {}. Skipping {}.".format(ca, host.name))
+            continue
 
         # save the TLS certificate
         with open(os.path.join(certificates_dir, '{}-cert.pem'.format(host.name)), 'r') as fh:
