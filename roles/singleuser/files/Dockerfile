@@ -46,4 +46,7 @@ RUN cd /usr/share/fonts && \
 	wget --quiet https://github.com/shreyankg/xkcd-desktop/raw/master/Humor-Sans.ttf
 RUN fc-cache --system-only
 
+# For geospatial connector ; pfrontiera
+RUN conda install --yes pysal==1.11.1
+
 CMD ["sh", "/srv/singleuser/resystemuser.sh"]
