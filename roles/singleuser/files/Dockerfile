@@ -3,7 +3,8 @@ FROM jupyter/systemuser
 RUN apt-get update && \
         DEBIAN_FRONTEND=noninteractive apt-get install -q -y \
 	texlive-latex-extra \
-	texlive-generic-recommended
+	texlive-generic-recommended \
+	texlive-xetex
 
 ADD resystemuser.sh /srv/singleuser/resystemuser.sh
 
@@ -39,5 +40,10 @@ RUN conda install --yes psycopg2=2.6.1
 
 # Disable Python 2 kernel
 RUN mv /usr/local/share/jupyter/kernels/python2 /var/tmp/
+
+# For plt.xkcd()
+RUN cd /usr/share/fonts && \
+	wget --quiet https://github.com/shreyankg/xkcd-desktop/raw/master/Humor-Sans.ttf
+RUN fc-cache --system-only
 
 CMD ["sh", "/srv/singleuser/resystemuser.sh"]
