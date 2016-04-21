@@ -49,4 +49,7 @@ RUN fc-cache --system-only
 # For geospatial connector ; pfrontiera
 RUN conda install --yes pysal==1.11.1
 
+# Hack to use xelatex instead of pdflatex
+RUN sed -i -e '/ *latex_command =/s/pdflatex/xelatex/' /opt/conda/lib/python*/site-packages/nbconvert/exporters/pdf.py
+
 CMD ["sh", "/srv/singleuser/resystemuser.sh"]
