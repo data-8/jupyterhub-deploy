@@ -38,7 +38,7 @@
   tags:
     - rebuild-jupyterhub
 
-- name: install jupyterhub
+- name: clone jupyterhub repo
   git:
     repo: https://github.com/jupyter/jupyterhub
     dest: /srv/jupyterhub
