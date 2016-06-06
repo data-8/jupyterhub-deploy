@@ -1,5 +1,6 @@
 import json
 import socket
+import time
 
 from tornado import gen
 from tornado.httpclient import AsyncHTTPClient, HTTPError
@@ -49,6 +50,7 @@ class DockerAuthenticator(LocalAuthenticator):
         accessing a simple REST api.
 
         """
+        self.log.info("docker_oauth::add_system_user {}".format(user))
         try:
             resp = yield self.client.fetch('http://unix+restuser/' + user.name, method='POST', body='{}')
         except HTTPError as e:
@@ -63,6 +65,18 @@ class DockerAuthenticator(LocalAuthenticator):
         user.state['user_id'] = info['uid']
         self.db.commit()
 
+
+    def pre_spawn_start(self, user, spawner):
+        """After authenticating, create a local system user if the user doesn't exist."""
+        # Invokes authenticate on GoogleApps since DockerAuthenticator
+        # doesn't have that attribute.
+        self.log.info("DockerAuthenticator::pre_spawn_start")
+
+        user_exists = super().system_user_exists(user)
+        if not user_exists:
+            self.log.info("DockerAuthenticator::pre_spawn_adding user {}".format(user))
+            self.add_user(user)
+            time.sleep(3)
 
 class DockerOAuthenticator(DockerAuthenticator, GoogleAppsOAuthenticator):
     """A version that mixes in local system user creation from within a
