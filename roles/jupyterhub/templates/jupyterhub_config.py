@@ -14,7 +14,7 @@ c.JupyterHub.authenticator_class = 'docker_oauth.DockerOAuthenticator'
 c.DockerOAuthenticator.oauth_callback_url = os.environ['OAUTH_CALLBACK_URL']
 c.DockerOAuthenticator.create_system_users = True
 c.Authenticator.admin_users = admin = set()
-c.Authenticator.whitelist = whitelist = set()
+#c.Authenticator.whitelist = whitelist = set()
 
 # Configure the spawner
 c.JupyterHub.spawner_class = 'swarmspawner.SwarmSpawner'
@@ -39,10 +39,8 @@ sys.path.insert(0, root)
 
 with open(os.path.join(root, 'userlist')) as f:
     for line in f:
-        if line.isspace():
-            continue
+        if line.isspace(): continue
         parts = line.split()
-        name = parts[0]
-        whitelist.add(name)
+        #whitelist.add(name)
         if len(parts) > 1 and parts[1] == 'admin':
-            admin.add(name)
+            admin.add(parts[0])
