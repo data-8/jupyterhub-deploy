@@ -7,7 +7,7 @@ from tornado.httpclient import AsyncHTTPClient, HTTPError
 from tornado.netutil import Resolver
 
 from jupyterhub.auth import LocalAuthenticator
-from oauthenticator import GoogleAppsOAuthenticator
+from oauthenticator import GoogleOAuthenticator
 from dockerspawner.systemuserspawner import SystemUserSpawner
 
 
@@ -68,8 +68,6 @@ class DockerAuthenticator(LocalAuthenticator):
 
     def pre_spawn_start(self, user, spawner):
         """After authenticating, create a local system user if the user doesn't exist."""
-        # Invokes authenticate on GoogleApps since DockerAuthenticator
-        # doesn't have that attribute.
         self.log.info("DockerAuthenticator::pre_spawn_start")
 
         user_exists = super().system_user_exists(user)
@@ -78,7 +76,7 @@ class DockerAuthenticator(LocalAuthenticator):
             self.add_user(user)
             time.sleep(3)
 
-class DockerOAuthenticator(DockerAuthenticator, GoogleAppsOAuthenticator):
+class DockerOAuthenticator(DockerAuthenticator, GoogleOAuthenticator):
     """A version that mixes in local system user creation from within a
     docker container, and Google Apps OAuthentication.
 
