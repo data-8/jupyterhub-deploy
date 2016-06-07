@@ -15,6 +15,8 @@ c.DockerOAuthenticator.oauth_callback_url = os.environ['OAUTH_CALLBACK_URL']
 c.DockerOAuthenticator.create_system_users = True
 c.Authenticator.admin_users = admin = set()
 #c.Authenticator.whitelist = whitelist = set()
+c.GoogleOAuthenticator.hosted_domain = 'berkeley.edu'
+c.GoogleOAuthenticator.login_service = 'UC Berkeley'
 
 # Configure the spawner
 c.JupyterHub.spawner_class = 'swarmspawner.SwarmSpawner'
