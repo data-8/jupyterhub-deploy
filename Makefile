@@ -4,6 +4,8 @@ DEPLOY_C="ds/deploy:2"
 
 REBUILD_TAGS=rebuild-proxy rebuild-systemuser rebuild-jupyterhub rebuild-interact rebuild-cull rebuild-stats rebuild-swarm jupyterhub_host
 
+RUN_CMD="/bin/bash"
+
 ansible:
 	curl -sO https://bootstrap.pypa.io/get-pip.py
 	sudo python get-pip.py
@@ -33,7 +35,7 @@ run:
 		-v $(shell pwd)/../.ssh:/root/.ssh \
 		-v $(shell pwd)/../proxy-certs/:/root/jupyterhub-deploy/proxy-certs \
 		-v $(shell pwd)/../certificates/:/root/jupyterhub-deploy/certificates \
-		$(DEPLOY_C) /bin/bash
+		$(DEPLOY_C) $(RUN_CMD)
 
 deploy:
 	ansible-vault encrypt --vault-password-file vault-password secrets.vault.yml
