@@ -9,7 +9,7 @@ RUN conda install ipython
 #RUN pip install git+git://github.com/jupyter/dockerspawner.git@c7a3f6d75adeaa67116ff237984c45af57e0fa93
 #RUN pip install git+git://github.com/docker/docker-py.git@1e916a1e83af49bc8d2fd5026ca9746129d1cebc
 RUN pip install git+git://github.com/docker/docker-py.git@1.8.1
-RUN pip install git+git://github.com/jupyterhub/dockerspawner.git@0.4.0.dev0
+RUN pip install git+git://github.com/jupyterhub/dockerspawner.git@0.4.0
 RUN /opt/conda/bin/pip install oauthenticator==0.4.*
 
 # Add variable to allow connecting to the docker swarm
