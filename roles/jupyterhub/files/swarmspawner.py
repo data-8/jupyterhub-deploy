@@ -16,58 +16,31 @@ class SwarmSpawner(SystemUserSpawner):
     container_ip = '0.0.0.0'
 
     @gen.coroutine
-    def lookup_node_name(self):
-        """Find the name of the swarm node that the container is running on."""
-        containers = yield self.docker('containers', all=True)
-        for container in containers:
-            if container['Id'] == self.container_id:
-                name, = container['Names']
-                node, container_name = name.lstrip("/").split("/")
-                raise gen.Return(node)
-
-    @gen.coroutine
-    def start(self, image=None, extra_create_kwargs=None, extra_host_config=None):
-        # look up mapping of node names to ip addresses
-        info = yield self.docker('info')
-        self.log.debug('DriverStatus: ' + str(info['DriverStatus']))
-        num_nodes = int(info['DriverStatus'][3][1])
-        self.log.info('num_nodes: ' + str(num_nodes))
-        node_info = info['DriverStatus'][4::8]
-        self.log.info('node_info: ' + str(node_info))
-        self.node_info = {}
-        for i in range(num_nodes):
-            node, ip_port = node_info[i]
-            if node == '':
-                self.log.info('name for ip_port %s is empty.' % ip_port)
-            self.node_info[node] = ip_port.split(":")[0]
-        self.log.debug("Swarm nodes are: {}".format(self.node_info))
-
+    def start(self, image=None, extra_create_kwargs={}, extra_host_config={}):
         # specify extra host configuration
-        if extra_host_config is None:
-            extra_host_config = {}
         if 'mem_limit' not in extra_host_config:
             extra_host_config['mem_limit'] = '2g'
-
         # specify extra creation options
-        if extra_create_kwargs is None:
-            extra_create_kwargs = {}
         if 'working_dir' not in extra_create_kwargs:
             extra_create_kwargs['working_dir'] = self.homedir
 
         # start the container
-        self.log.info("starting container: image:{}".format(image))
+        self.log.info("starting container")
         yield DockerSpawner.start(
             self, image=image, extra_create_kwargs=extra_create_kwargs,
             extra_host_config=extra_host_config)
 
-        # figure out what the node is and then get its ip
-        name = yield self.lookup_node_name()
-        self.user.server.ip = self.node_info[name]
-        self.log.info("{} was started on {} ({}:{})".format(
-            self.container_name, name, self.user.server.ip, self.user.server.port))
-
+        # Ask swarm about our container
+        inspection = self.client.inspect_container(self.container_id)
+        ip = inspection['Node']['IP']
+        node = inspection['Node']['Name']
+        container_name = inspection['Name'][1:] # omit leading "/"
+        # Log
+        self.log.info("{} started on {} ({})".format(container_name, node, ip))
         self.log.info(self.env)
+        # Register IP in ORM
+        self.user.server.ip = ip
 
     def _user_id_default(self):
-        print(self.user.state) # debug
+        self.log.debug(self.user.state)
         return self.user.state['user_id']
