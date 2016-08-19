@@ -50,6 +50,12 @@
   tags:
     - rebuild-jupyterhub
 
+- name: add systemuserspawner.py
+  copy: src=systemuserspawner.py dest=/srv/jupyterhub/systemuserspawner.py
+  sudo: yes
+  tags:
+    - rebuild-jupyterhub
+
 - name: add docker_oauth.py
   copy: src=docker_oauth.py dest=/srv/jupyterhub/docker_oauth.py
   sudo: yes
