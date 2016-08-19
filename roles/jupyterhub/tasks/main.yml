@@ -16,28 +16,6 @@
   command: iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to 8000
   sudo: yes
 
-- name: stop and remove jupyterhub container
-  docker:
-    docker_api_version: "{{ docker_api_version }}"
-    state: absent
-    image: jupyterhub
-    name: jupyterhub
-  sudo: yes
-  tags:
-    - rebuild-jupyterhub
-
-- name: create the jupyterhub_db directory
-  file: path=/srv/jupyterhub_db state=directory
-  sudo: yes
-  tags:
-    - rebuild-jupyterhub
-
-- name: create jupyterhub.sqlite
-  file: path=/srv/jupyterhub_db/jupyterhub.sqlite state=touch mode=0600
-  sudo: yes
-  tags:
-    - rebuild-jupyterhub
-
 - name: create the jupyterhub directory
   file: path=/srv/jupyterhub state=directory
   sudo: yes
@@ -84,10 +62,32 @@
   tags:
     - rebuild-jupyterhub
 
+- name: create the jupyterhub_db directory
+  file: path=/srv/jupyterhub_db state=directory
+  sudo: yes
+  tags:
+    - rebuild-jupyterhub
+
+- name: create jupyterhub.sqlite
+  file: path=/srv/jupyterhub_db/jupyterhub.sqlite state=touch mode=0600
+  sudo: yes
+  tags:
+    - rebuild-jupyterhub
+
+- name: stop and remove jupyterhub container
+  docker:
+    docker_api_version: "{{ docker_api_version }}"
+    state: absent
+    image: jupyterhub
+    name: jupyterhub
+  sudo: yes
+  tags:
+    - rebuild-jupyterhub
+
 - name: launch jupyterhub
   docker:
     docker_api_version: "{{ docker_api_version }}"
-    state: running
+    state: started
     image: jupyterhub
     detach: true
     net: host
