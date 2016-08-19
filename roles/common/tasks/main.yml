@@ -31,5 +31,23 @@
   cron: name="linux-image-extra" minute=10 user="root" job="/usr/local/sbin/linux-image-extra.sh"
   sudo: yes
 
+- name: install unattended-upgrades
+  apt: name=unattended-upgrades state=present
+  sudo: yes
+  tags:
+    - unattended
+
+- name: check for 20auto-upgrades
+  stat: path=/etc/apt/apt.conf.d/20auto-upgrades
+  register: unattended
+  tags:
+    - unattended
+
+- name: disable periodic unattended-upgrades
+  lineinfile: dest=/etc/apt/apt.conf.d/20auto-upgrades create=no backrefs=yes regexp='(APT::Periodic::Unattended-Upgrade)' line='\1 "0";'
+  when: unattended.stat.exists
+  tags:
+    - unattended
+
 - include: ssh.yml
 - include: python.yml
