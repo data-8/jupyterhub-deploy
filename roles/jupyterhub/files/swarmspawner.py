@@ -10,10 +10,7 @@ from dockerspawner import DockerSpawner, SystemUserSpawner
 import requests
 requests.packages.urllib3.disable_warnings()
 
-
 class SwarmSpawner(SystemUserSpawner):
-
-    container_ip = '0.0.0.0'
 
     @gen.coroutine
     def lookup_node_name(self):
@@ -29,30 +26,18 @@ class SwarmSpawner(SystemUserSpawner):
     def start(self, image=None, extra_create_kwargs=None, extra_host_config=None):
         # look up mapping of node names to ip addresses
         info = yield self.docker('info')
-        self.log.debug('DriverStatus: ' + str(info['DriverStatus']))
-        num_nodes = int(info['DriverStatus'][3][1])
-        self.log.debug('num_nodes: ' + str(num_nodes))
-        node_info = info['DriverStatus'][4::5] # docker-py v1.7-1.8
+        self.log.info('SystemStatus: ' + str(info['SystemStatus']))
+        num_nodes = int(info['SystemStatus'][3][1])
+        self.log.info('num_nodes: ' + str(num_nodes))
+        node_info = info['SystemStatus'][4::9] # swarm 1.2.4; docker-py v1.7-1.8
         self.log.info('node_info: ' + str(node_info))
         self.node_info = {}
         for i in range(num_nodes):
             node, ip_port = node_info[i]
             if node == '':
                 self.log.info('name for ip_port %s is empty.' % ip_port)
-            self.node_info[node] = ip_port.split(":")[0]
+            self.node_info[node.strip()] = ip_port.split(":")[0]
         self.log.debug("Swarm nodes are: {}".format(self.node_info))
-
-        # specify extra host configuration
-        if extra_host_config is None:
-            extra_host_config = {}
-        if 'mem_limit' not in extra_host_config:
-            extra_host_config['mem_limit'] = '2g'
-
-        # specify extra creation options
-        if extra_create_kwargs is None:
-            extra_create_kwargs = {}
-        if 'working_dir' not in extra_create_kwargs:
-            extra_create_kwargs['working_dir'] = self.homedir
 
         # start the container
         self.log.info("starting container: image:{}".format(image))
@@ -78,7 +63,3 @@ class SwarmSpawner(SystemUserSpawner):
         # Register IP in ORM ; don't enable this yet
         #self.user.server.ip = ip
         #self.user.server.port = port
-
-    def _user_id_default(self):
-        print(self.user.state) # debug
-        return self.user.state['user_id']
