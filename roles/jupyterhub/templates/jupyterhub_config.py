@@ -24,6 +24,7 @@ c.SystemUserSpawner.container_image = 'data8/systemuser'
 c.DockerSpawner.tls_cert = '{{ docker_tls_path }}/cert.pem'
 c.DockerSpawner.tls_key = '{{ docker_tls_path }}/key.pem'
 c.DockerSpawner.remove_containers = True
+c.DockerSpawner.read_only_volumes = {'/home/shared':'/home/shared'}
 #c.Spawner.start_timeout = 300
 #c.Spawner.http_timeout = 150
 
