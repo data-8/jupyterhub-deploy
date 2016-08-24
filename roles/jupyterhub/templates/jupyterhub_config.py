@@ -21,7 +21,7 @@ c.GoogleOAuthenticator.login_service = 'UC Berkeley'
 # Configure the spawner
 c.JupyterHub.spawner_class = 'systemuserspawner.SystemUserSpawner'
 #c.JupyterHub.spawner_class = 'swarmspawner.SwarmSpawner'
-c.SystemUserSpawner.container_image = 'data8/systemuser'
+c.SystemUserSpawner.container_image = 'data8/systemuser:nodrive'
 c.DockerSpawner.tls_cert = '{{ docker_tls_path }}/cert.pem'
 c.DockerSpawner.tls_key = '{{ docker_tls_path }}/key.pem'
 c.DockerSpawner.remove_containers = True
