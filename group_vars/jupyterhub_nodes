@@ -1,6 +1,6 @@
 ---
 docker_images:
-  - jupyter/systemuser
+  - data8/systemuser:nodrive
 
 docker_server_tls: yes
 docker_client_tls: yes
