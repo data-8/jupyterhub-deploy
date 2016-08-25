@@ -1,39 +1,33 @@
 ---
+- include: ssh.yml
+
 - name: remove spurious dpkg lock file
   shell: if [ /etc/hostname -nt /var/lib/dpkg/lock ]; then rm /var/lib/dpkg/lock ; fi
 
 - name: install vim for ops sanity
   apt: update_cache=yes cache_valid_time=600 name=vim state=latest
-  sudo: yes
 
 - name: install acct for process tracking
   apt: name=acct state=latest
-  sudo: yes
 
 - name: YOLO system upgrade
   apt: upgrade=safe
-  sudo: yes
 
 - name: install git
   apt: name=git state=latest
-  sudo: yes
 
-# May trigger a bug with aufs
+# mlocate may trigger a bug with aufs
 - name: remove mlocate
   apt: name=mlocate state=absent
-  sudo: yes
 
 - name: install linux-image-extra.sh script
   copy: src=linux-image-extra.sh dest=/usr/local/sbin/linux-image-extra.sh mode=0755
-  sudo: yes
 
 - name: create cronjob linux-image-extra
   cron: name="linux-image-extra" minute=10 user="root" job="/usr/local/sbin/linux-image-extra.sh"
-  sudo: yes
 
 - name: install unattended-upgrades
   apt: name=unattended-upgrades state=present
-  sudo: yes
   tags:
     - unattended
 
@@ -49,5 +43,4 @@
   tags:
     - unattended
 
-- include: ssh.yml
 - include: python.yml

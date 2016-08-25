@@ -2,30 +2,40 @@
 - fail: msg="no ssh keys defined"
   when: github_usernames == [] and other_ssh_keys == []
 
-- name: sshd configuration
-  copy: src=sshd_config dest=/etc/ssh/sshd_config mode=0644
-  sudo: yes
-  notify:
-  - restart sshd
-
 - name: directory to hold public keys
   file: state=directory path=/tmp/pubkeys mode=0755
+  remote_user: ubuntu
   tags:
     - ssh
 
 - name: fetch public keys from github
   get_url: dest=/tmp/pubkeys/{{ item }}-pubkeys url=https://github.com/{{ item }}.keys force=yes
   with_items: github_usernames
+  remote_user: ubuntu
   tags:
     - ssh
 
 - name: include additional public keys
   template: dest=/tmp/pubkeys/other-pubkeys src=other-pubkeys.j2
+  remote_user: ubuntu
   tags:
     - ssh
 
-- name: assemble the authorized keys file
-  assemble: dest=/root/.ssh/authorized_keys mode=0600 src=/tmp/pubkeys
+- name: assemble the root authorized keys file
+  assemble: dest=/root/.ssh/authorized_keys src=/tmp/pubkeys mode=0600
+  remote_user: ubuntu
   sudo: yes
   tags:
     - ssh
+
+- name: assemble the ubuntu authorized keys file
+  assemble: dest=/home/ubuntu/.ssh/authorized_keys src=/tmp/pubkeys mode=0600 owner=ubuntu
+  remote_user: ubuntu
+  sudo: yes
+  tags:
+    - ssh
+
+- name: sshd configuration
+  copy: src=sshd_config dest=/etc/ssh/sshd_config mode=0644
+  notify:
+  - restart sshd
