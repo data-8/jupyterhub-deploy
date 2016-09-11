@@ -65,14 +65,14 @@ class DockerAuthenticator(LocalAuthenticator):
         user.state['user_id'] = info['uid']
         self.db.commit()
 
+        # update the state in the spawner, so that it knows the user id, etc.
+        user.spawner.load_state(user.state)
 
     def pre_spawn_start(self, user, spawner):
         """After authenticating, create a local system user if the user doesn't exist."""
-        self.log.info("DockerAuthenticator::pre_spawn_start")
-
         user_exists = super().system_user_exists(user)
         if not user_exists:
-            self.log.info("DockerAuthenticator::pre_spawn_adding user {}".format(user))
+            self.log.info("DockerAuthenticator::pre_spawn_start adding user {}".format(user))
             self.add_user(user)
             time.sleep(3)
 
