@@ -8,20 +8,24 @@
 - fail: msg="base_url is not defined"
   when: base_url == ''
 
-- name: install daemon for interact
-  apt: update_cache=yes cache_valid_time=600 name=daemon state=latest
+- name: download get_pip.py
+  get_url: dest=/tmp/get_pip.py url=https://bootstrap.pypa.io/get-pip.py
+
+- name: install pip for python3
+  command: python3 /tmp/get_pip.py creates=/usr/local/bin/pip3
+  sudo: yes
+
+- name: install uwsgi
+  apt: update_cache=yes cache_valid_time=600 name={{ item }} state=latest
+  with_items:
+    - uwsgi
+    - uwsgi-plugin-python3
   sudo: yes
   tags:
     - rebuild-interact
 
-- name: stop interact
-  shell: "daemon -n interact --running && daemon -n interact --stop || echo ok"
-  sudo: yes
-  tags:
-    - rebuild-interact
-
-- name: ensure that daemon says interact is not running
-  shell: "[ ! $(daemon -n interact --running) ]"
+- name: install flask libraries
+  command: chdir=/srv/interact pip3 install -r requirements.txt
   sudo: yes
   tags:
     - rebuild-interact
@@ -33,23 +37,22 @@
   tags:
     - rebuild-interact
 
-- name: install interact
-  git:
-    repo: https://github.com/data-8/DS8-interact
-    dest: /srv/interact
-    force: yes
+#- name: install interact
+#  git:
+#    repo: https://github.com/data-8/DS8-interact
+#    dest: /srv/interact
+#    force: yes
+#  tags:
+#    - rebuild-interact
+
+- name: stop interact
+  shell: "daemon -n interact --running && daemon -n interact --stop || echo ok"
+  sudo: yes
   tags:
     - rebuild-interact
 
-- name: download get_pip.py
-  get_url: dest=/tmp/get_pip.py url=https://bootstrap.pypa.io/get-pip.py
-
-- name: install pip for python3
-  command: python3 /tmp/get_pip.py creates=/usr/local/bin/pip3
-  sudo: yes
-
-- name: install flask libraries
-  command: chdir=/srv/interact pip3 install -r requirements.txt
+- name: ensure interact is not running
+  shell: "[ ! $(daemon -n interact --running) ]"
   sudo: yes
   tags:
     - rebuild-interact
@@ -59,8 +62,7 @@
     env JPY_API_TOKEN={{ jpy_api_token.stdout }}
         GITHUB_API_TOKEN={{ github_api_token }}
         BASE_URL={{ base_url }}
-    daemon -n interact -o /var/log/interact.log --chdir=/srv --
-      python3 /srv/interact/run.py --production
+    daemon -n interact -o /var/log/interact.log --chdir=/srv/interact -- uwsgi --http-socket :8002 --workers 10 --plugin python3 --wsgi-file wsgi.py --master-fifo /run/interact.sock
   sudo: yes
   tags:
     - rebuild-interact
