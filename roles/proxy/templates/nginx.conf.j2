@@ -59,21 +59,12 @@ http {
 
             proxy_set_header X-NginX-Proxy true;
         }
+
         location /hub/interact {
             proxy_pass http://{{ jupyterhub_host }}:8002;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header Host $host;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-NginX-Proxy true;
-        }
-
-        location ~* /(user/[^/]*)/(api/kernels/[^/]+/channels|terminals/websocket)/? {
-            proxy_pass http://{{ jupyterhub_host }}:8000;
-
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header Host $host;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-
             proxy_set_header X-NginX-Proxy true;
 
             # WebSocket support
@@ -81,7 +72,34 @@ http {
             proxy_set_header Upgrade $http_upgrade;
             proxy_set_header Connection "upgrade";
             proxy_read_timeout 86400;
+        }
 
+        location /hub/interact2 {
+            proxy_pass http://{{ jupyterhub_host }}:8003;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-NginX-Proxy true;
+
+            # WebSocket support
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_read_timeout 86400;
+        }
+
+        location ~* /(user/[^/]*)/(api/kernels/[^/]+/channels|terminals/websocket)/? {
+            proxy_pass http://{{ jupyterhub_host }}:8000;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-NginX-Proxy true;
+
+            # WebSocket support
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_read_timeout 86400;
         }
 
 	# Why is this happening now ; pre-0.4.1

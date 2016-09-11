@@ -15,16 +15,22 @@
   command: python3 /tmp/get_pip.py creates=/usr/local/bin/pip3
   sudo: yes
 
-- name: install uwsgi
+- name: install daemon
   apt: update_cache=yes cache_valid_time=600 name={{ item }} state=latest
   with_items:
-    - uwsgi
-    - uwsgi-plugin-python3
+    - daemon
   sudo: yes
+
+- name: install interact
+  git:
+    repo: https://github.com/data-8/DS8-interact
+    dest: /srv/interact
+    version: master
+    force: yes
   tags:
     - rebuild-interact
 
-- name: install flask libraries
+- name: install interact dependencies
   command: chdir=/srv/interact pip3 install -r requirements.txt
   sudo: yes
   tags:
@@ -37,22 +43,16 @@
   tags:
     - rebuild-interact
 
-#- name: install interact
-#  git:
-#    repo: https://github.com/data-8/DS8-interact
-#    dest: /srv/interact
-#    force: yes
-#  tags:
-#    - rebuild-interact
-
 - name: stop interact
   shell: "daemon -n interact --running && daemon -n interact --stop || echo ok"
+  #shell: "echo q > /run/interact.sock"
   sudo: yes
   tags:
     - rebuild-interact
 
-- name: ensure interact is not running
+- name: ensure that daemon says interact is not running
   shell: "[ ! $(daemon -n interact --running) ]"
+  #shell: "[ $(pgrep -c uwsgi) -eq 0 ]"
   sudo: yes
   tags:
     - rebuild-interact
@@ -62,7 +62,8 @@
     env JPY_API_TOKEN={{ jpy_api_token.stdout }}
         GITHUB_API_TOKEN={{ github_api_token }}
         BASE_URL={{ base_url }}
-    daemon -n interact -o /var/log/interact.log --chdir=/srv/interact -- uwsgi --http-socket :8002 --workers 10 --plugin python3 --wsgi-file wsgi.py --master-fifo /run/interact.sock
+    daemon -n interact -o /var/log/interact.log --chdir=/srv/interact --
+    python3 run.py --production
   sudo: yes
   tags:
     - rebuild-interact

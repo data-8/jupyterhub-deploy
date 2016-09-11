@@ -88,21 +88,21 @@
   tags:
     - rebuild-proxy
 
+- name: build nginx container
+  docker_image:
+    path: "{{ nginx_config_dir }}"
+    name: nginx
+    state: build
+  sudo: yes
+  tags:
+    - rebuild-proxy
+
 - name: stop and remove nginx container
   docker:
     docker_api_version: "{{ docker_api_version }}"
     state: absent
     image: nginx
     name: nginx
-  sudo: yes
-  tags:
-    - rebuild-proxy
-
-- name: build nginx container
-  docker_image:
-    path: "{{ nginx_config_dir }}"
-    name: nginx
-    state: build
   sudo: yes
   tags:
     - rebuild-proxy

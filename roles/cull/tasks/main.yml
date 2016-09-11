@@ -2,12 +2,9 @@
 - fail: msg="jupyterhub_admin_user is not defined"
   when: jupyterhub_admin_user == ''
 
-- name: stop and remove cull container
-  docker:
-    docker_api_version: "{{ docker_api_version }}"
-    state: absent
-    image: cull
-    name: cull
+- name: get a jupyterhub api token
+  command: docker exec jupyterhub jupyterhub token -f /srv/jupyterhub/jupyterhub_config.py {{ jupyterhub_admin_user }}
+  register: jpy_api_token
   sudo: yes
   tags:
     rebuild-cull
@@ -38,9 +35,12 @@
   tags:
     rebuild-cull
 
-- name: get a jupyterhub api token
-  command: docker exec jupyterhub jupyterhub token -f /srv/jupyterhub/jupyterhub_config.py {{ jupyterhub_admin_user }}
-  register: jpy_api_token
+- name: stop and remove cull container
+  docker:
+    docker_api_version: "{{ docker_api_version }}"
+    state: absent
+    image: cull
+    name: cull
   sudo: yes
   tags:
     rebuild-cull

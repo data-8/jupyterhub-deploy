@@ -1,0 +1,12 @@
+#!/usr/bin/env python
+import json
+from jupyterhub.orm import new_session_factory, User
+db_file='/srv/jupyterhub_db/jupyterhub.sqlite'
+db = new_session_factory('sqlite:///' + db_file)()
+users = {}
+for user in db.query(User):
+        users[user.name] = { 'id':user.id,
+                'last_activity':str(user.last_activity),
+                'state':user.state
+        }
+print(json.dumps(users))
