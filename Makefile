@@ -51,5 +51,4 @@ clean:
 	docker rm $(shell docker ps -n=1 -q)
 
 $(REBUILD_TAGS):
-	#script/assemble_certs
 	script/deploy -t $@
