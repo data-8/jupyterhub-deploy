@@ -8,6 +8,8 @@ import sys
 c.JupyterHub.log_level = "INFO"
 c.JupyterHub.db_url = 'sqlite:////srv/jupyterhub_db/jupyterhub.sqlite'
 c.JupyterHub.proxy_check_interval = 30
+# Use the nginx based proxy, rather than the nodejs one
+c.JupyterHub.proxy_cmd = '/opt/conda/bin/nchp'
 
 # Configure the authenticator
 c.JupyterHub.authenticator_class = 'docker_oauth.DockerOAuthenticator'
@@ -25,7 +27,8 @@ c.SystemUserSpawner.container_image = 'data8/systemuser:nodrive'
 c.DockerSpawner.tls_cert = '{{ docker_tls_path }}/cert.pem'
 c.DockerSpawner.tls_key = '{{ docker_tls_path }}/key.pem'
 c.DockerSpawner.remove_containers = True
-c.DockerSpawner.read_only_volumes = {'/home/shared':'/home/shared'}
+#c.DockerSpawner.read_only_volumes = {'/home/shared':'/home/shared'}
+c.DockerSpawner.volumes = {'/home/shared':'/home/shared'}
 c.DockerSpawner.extra_host_config = {'mem_limit': '2g'}
 c.DockerSpawner.container_ip = "0.0.0.0"
 #c.Spawner.start_timeout = 300
