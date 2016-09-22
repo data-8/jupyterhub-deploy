@@ -11,6 +11,9 @@ c.JupyterHub.proxy_check_interval = 30
 # Use the nginx based proxy, rather than the nodejs one
 c.JupyterHub.proxy_cmd = '/opt/conda/bin/nchp'
 
+# Enable GSIs to login as the students
+c.JupyterHub.admin_access = True
+
 # Configure the authenticator
 c.JupyterHub.authenticator_class = 'docker_oauth.DockerOAuthenticator'
 c.DockerOAuthenticator.oauth_callback_url = os.environ['OAUTH_CALLBACK_URL']
