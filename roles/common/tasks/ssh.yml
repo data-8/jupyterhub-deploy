@@ -28,12 +28,12 @@
   tags:
     - ssh
 
-- name: assemble the ubuntu authorized keys file
-  assemble: dest=/home/ubuntu/.ssh/authorized_keys src=/tmp/pubkeys mode=0600 owner=ubuntu
-  remote_user: ubuntu
-  sudo: yes
-  tags:
-    - ssh
+# - name: assemble the ubuntu authorized keys file
+#   assemble: dest=/home/ubuntu/.ssh/authorized_keys src=/tmp/pubkeys mode=0600 owner=ubuntu
+#   remote_user: ubuntu
+#   sudo: yes
+#   tags:
+#     - ssh
 
 - name: sshd configuration
   copy: src=sshd_config dest=/etc/ssh/sshd_config mode=0644

@@ -10,8 +10,8 @@
 - name: install acct for process tracking
   apt: name=acct state=latest
 
-- name: YOLO system upgrade
-  apt: upgrade=safe
+# - name: YOLO system upgrade
+#   apt: upgrade=safe
 
 - name: install git
   apt: name=git state=latest
