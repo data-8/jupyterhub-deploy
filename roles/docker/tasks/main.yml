@@ -110,6 +110,16 @@
   tags:
     - rebuild-docker
 
+- name: create /etc/systemd/system/docker.service.d dir
+  file: path=/etc/systemd/system/docker.service.d state=directory
+  sudo: yes
+
+- name: install docker systemd config (for Ubuntu >=15)
+  copy: src=docker.conf dest=/etc/systemd/system/docker.service.d/docker.conf mode=0644
+  sudo: yes
+  tags:
+    - rebuild-docker
+
 - name: create docker TLS directory
   file: path={{ docker_tls_path }} state=directory
   sudo: yes
