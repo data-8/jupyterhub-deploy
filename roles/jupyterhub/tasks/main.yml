@@ -16,6 +16,12 @@
   command: iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to 8000
   sudo: yes
 
+- name: create the /home/shared directory
+  file: path=/home/shared state=directory
+  sudo: yes
+  tags:
+    - rebuild-jupyterhub
+
 - name: create the jupyterhub directory
   file: path=/srv/jupyterhub state=directory
   sudo: yes
