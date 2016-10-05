@@ -5,7 +5,7 @@ ssl_cert_path: ''
 ssl_key_path: ''
 
 # This is the path to the static files for the singleuser notebook server
-notebook_static_files: /srv/ipython/IPython/html/static/
+notebook_static_files: /srv/notebook/notebook/static/
 
 # These are the contents of the SSL certificate and key themselves. These should
 # also be overwritten in an encrypted vault file.

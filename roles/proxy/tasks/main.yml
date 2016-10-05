@@ -21,12 +21,11 @@
 #  tags:
 #    - rebuild-proxy
 
-- name: pull static ipython data
-  git:
-    repo: https://github.com/ipython/ipython
-    dest: /srv/ipython
-    version: 4.0.x
-    force: yes
+- name: install static jupyter notebook data
+  pip:
+    name: notebook
+    version: 4.0.6
+    extra_args: --target=/srv/notebook --no-deps
   tags:
     - rebuild-proxy
 
