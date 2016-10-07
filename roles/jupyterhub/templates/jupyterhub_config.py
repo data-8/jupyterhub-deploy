@@ -40,6 +40,7 @@ c.DockerSpawner.container_ip = "0.0.0.0"
 # Possibly prevent NFS locking issues with sqlite
 # https://github.com/jupyter/dockerspawner/issues/46
 c.HistoryManager.enabled = False
+c.NotebookNotary.db_file = ':memory:'
 
 # The docker instances need access to the Hub, so the default loopback port
 # doesn't work:
