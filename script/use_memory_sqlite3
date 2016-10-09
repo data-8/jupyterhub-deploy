@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# According to https://github.com/jupyter/nbformat/issues/52, sqlite3 has some
+# weird locking errors on NFS. This script adds a
+# ~/.jupyter/jupyter_notebook_config.py to each user's home directory that
+# tells nbformat to use an in-memory implementation of sqlite3 instead of a
+# file one.
+#
+# This should not be run on production since this makes every notebook
+# untrusted.
+set -e
+
+ROOT=$(dirname $0)/..
+CONFIG_PATH=$ROOT/roles/jupyterhub/files/jupyter_notebook_config.py
+
+REMOTE=hub
+
+JUPYTER_DIR={}/.jupyter
+REMOTE_CONFIG_ORIG=/tmp/jupyter_notebook_config.py
+REMOTE_CONFIG_PATH=$JUPYTER_DIR/jupyter_notebook_config.py
+
+scp -F $ROOT/ssh_config $CONFIG_PATH $REMOTE:/tmp
+
+ssh -F ~/jupyterhub-deploy/ssh_config hub << EOF
+  cd /home
+  ls -1 | xargs -n 1 -I {} sh -c 'mkdir -p $JUPYTER_DIR; cp $REMOTE_CONFIG_ORIG $REMOTE_CONFIG_PATH'
+EOF
+
