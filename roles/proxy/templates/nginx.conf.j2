@@ -101,6 +101,19 @@ http {
             proxy_set_header Connection "upgrade";
             proxy_read_timeout 86400;
         }
+	
+	
+	location /nginx_status {
+
+            # Turn on nginx status page
+            stub_status on;
+
+            # Do not log access queries for status page
+            access_log   off;
+
+            # Suppress SSL validation
+            # ssl_validation off;
+   }
 
 	# Why is this happening now ; pre-0.4.1
 	#rewrite ^/hub/login /hub/oauth_login last;
