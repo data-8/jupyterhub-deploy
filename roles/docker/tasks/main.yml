@@ -187,3 +187,19 @@
   sudo: yes
   tags:
   - rebuild-docker
+
+- name: add user running the Datadog Agent to docker's group
+  shell: usermod -a -G docker dd-agent
+
+- name: configure the Datadog Agent to connect to Docker
+  shell: cp /etc/dd-agent/conf.d/docker_daemon.yaml.example /etc/dd-agent/conf.d/docker_daemon.yaml
+  sudo: yes
+
+- name: add new tag names line to docker_daemon.yaml
+  shell: 'sed -i ''31 i \ \ \ \ new_tag_names: true'' /etc/dd-agent/conf.d/docker_daemon.yaml'
+  sudo: yes
+
+- name: restart Datadog Agent
+  shell: /etc/init.d/datadog-agent restart
+  sudo: yes
+
