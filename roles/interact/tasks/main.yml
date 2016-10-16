@@ -23,7 +23,7 @@
 
 - name: install interact
   git:
-    repo: https://github.com/data-8/DS8-interact
+    repo: https://github.com/data-8/interact
     dest: /srv/interact
     version: master
     force: yes
