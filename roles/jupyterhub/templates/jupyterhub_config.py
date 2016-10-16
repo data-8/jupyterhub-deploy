@@ -49,6 +49,11 @@ c.JupyterHub.hub_ip = '{{ servicenet_ip }}'
 root = os.environ.get('OAUTHENTICATOR_DIR', os.path.dirname(__file__))
 sys.path.insert(0, root)
 
+# Enable statsd so that Datadog can keep track of metrics
+c.JupyterHub.statsd_host = 'localhost'
+c.JupyterHub.statsd_port = 8125
+c.JupyterHub.statsd_prefix = 'jupyterhub'
+
 with open(os.path.join(root, 'userlist')) as f:
     for line in f:
         if line.isspace(): continue
