@@ -6,8 +6,10 @@
   vars_files:
   - 'secrets.vault.yml'
   roles:
+  - Datadog.datadog
   - common
   - docker
+  - dd-docker
 
 - hosts: proxy
   vars_files:

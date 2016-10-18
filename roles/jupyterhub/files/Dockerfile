@@ -7,6 +7,9 @@ RUN pip install git+git://github.com/docker/docker-py.git@1.8.1
 RUN pip install git+git://github.com/jupyterhub/dockerspawner.git@0.4.0
 RUN /opt/conda/bin/pip install oauthenticator==0.4.*
 
+# Install statsd module
+RUN pip install statsd
+
 # Add variable to allow connecting to the docker swarm
 ENV DOCKER_HOST https://127.0.0.1:2376
 
