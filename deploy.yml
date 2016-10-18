@@ -6,7 +6,7 @@
   vars_files:
   - 'secrets.vault.yml'
   roles:
-  - Datadog.datadog
+  - {role: Datadog.datadog, tags: ['rebuild-dd']}
   - common
   - docker
   - dd-docker
