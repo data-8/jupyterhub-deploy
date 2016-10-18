@@ -1,0 +1,4 @@
+#!/bin/sh
+exec ssh -F /home/ubuntu/jupyterhub-deploy/ssh_config hub \
+	docker --tls -H tcp://127.0.0.1:2376 info "$@" |
+	egrep '^ node|^....Containers' | xargs -L2

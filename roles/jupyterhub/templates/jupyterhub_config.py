@@ -9,7 +9,7 @@ c.JupyterHub.log_level = "INFO"
 c.JupyterHub.db_url = 'sqlite:////srv/jupyterhub_db/jupyterhub.sqlite'
 c.JupyterHub.proxy_check_interval = 30
 # Use the nginx based proxy, rather than the nodejs one
-c.JupyterHub.proxy_cmd = '/opt/conda/bin/nchp'
+# c.JupyterHub.proxy_cmd = '/opt/conda/bin/nchp'
 
 # Enable GSIs to login as the students
 c.JupyterHub.admin_access = True

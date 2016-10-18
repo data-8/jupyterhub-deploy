@@ -13,7 +13,11 @@ import os
 import sys
 import argparse
 import subprocess
-import ansible.inventory
+
+# ansible >= 2
+from ansible.inventory import Inventory
+from ansible.vars import VariableManager
+from ansible.parsing.dataloader import DataLoader
 
 parser = argparse.ArgumentParser()
 arg_hosts = []
@@ -23,22 +27,26 @@ if len(sys.argv) > 1:
 # To readily ssh to hosts, alias or run ssh as
 # "ssh -F ~/jupyterhub-deploy/ssh_config"
 CONFIG_FILE = '/home/ubuntu/jupyterhub-deploy/ssh_config.new'
-HOST_FMT = 'Host {}\nUser=root\nHostName={}\n\n'
+HOST_FMT = 'Host {}\nUser=root\nHostName={}\n'
 
 if os.path.exists(CONFIG_FILE):
 	os.rename(CONFIG_FILE, CONFIG_FILE + '.bak')
-f = open(CONFIG_FILE, 'w')
 
 DEBUG = False
 
-SSH = ['ssh']
+# Don't prompt when adding host keys to known hosts
+SSH = ['ssh', '-x', '-o', 'StrictHostKeyChecking=no', '-o', 'LogLevel=ERROR']
 if DEBUG: SSH = ['echo'] + SSH
+
 REMOTE_CMD = 'sudo cp -p /root/.ssh/authorized_keys{,-}; sudo install -o root -m 0600 /home/ubuntu/.ssh/authorized_keys /root/.ssh/authorized_keys'
 
+variable_manager = VariableManager()
+loader = DataLoader()
 vault_password = open('../jupyterhub-deploy/vault-password').read().strip()
-inv = ansible.inventory.Inventory(
-	host_list='../jupyterhub-deploy/inventory',
-	vault_password=vault_password)
+loader.set_vault_password(vault_password)
+
+inv = Inventory(loader=loader, host_list='../jupyterhub-deploy/inventory',
+	variable_manager=variable_manager)
 
 for host in inv.get_group('all').get_hosts():
 	# If the user specified hosts and this isn't one of them
@@ -46,10 +54,6 @@ for host in inv.get_group('all').get_hosts():
 		continue
 	keyname = host.name
 	ip = host.vars['fqdn']
-	f.write(HOST_FMT.format(host.name, ip))
+	print(HOST_FMT.format(host.name.replace('jupyterhub_', ''), ip))
 
-	print(" ".join(SSH + ["ubuntu@"+ip, REMOTE_CMD]))
 	subprocess.call(SSH + ["ubuntu@"+ip, REMOTE_CMD])
-
-f.flush()
-f.close()

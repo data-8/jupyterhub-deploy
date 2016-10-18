@@ -22,9 +22,9 @@ ADD systemuserspawner.py /srv/oauthenticator/systemuserspawner.py
 ADD docker_oauth.py /srv/oauthenticator/docker_oauth.py
 
 # For nginx-chp
-RUN apt-get -q update
-RUN apt-get install -y --no-install-recommends ca-certificates nginx-extras lua-cjson
-RUN pip --no-cache-dir install git+https://github.com/yuvipanda/jupyterhub-nginx-chp.git@3840564
+# RUN apt-get -q update
+# RUN apt-get install -y --no-install-recommends ca-certificates nginx-extras lua-cjson
+# RUN pip --no-cache-dir install git+https://github.com/yuvipanda/jupyterhub-nginx-chp.git@3840564
 
 # set working directory to the jupyterhub directory
 WORKDIR /srv/jupyterhub
