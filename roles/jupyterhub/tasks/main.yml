@@ -81,7 +81,7 @@
     - rebuild-jupyterhub
 
 - name: pull jupyterhub image
-  shell: docker pull data8/jupyterhub
+  shell: docker pull data8/jupyterhub:statsd
   sudo: yes
   tags:
     - rebuild-jupyterhub
