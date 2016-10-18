@@ -9,6 +9,7 @@
   - Datadog.datadog
   - common
   - docker
+  - dd-docker
 
 - hosts: proxy
   vars_files:
