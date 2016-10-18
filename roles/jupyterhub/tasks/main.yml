@@ -100,7 +100,7 @@
   docker:
     docker_api_version: "{{ docker_api_version }}"
     state: started
-    image: data8/jupyterhub
+    image: data8/jupyterhub:statsd
     detach: true
     net: host
     name: jupyterhub
