@@ -50,7 +50,7 @@ def getTimestamp(line):
 def parseAvgTime(line):
     time = re.search(TIME_REGEX, line)
     if time is not None:
-        time = time.group(0)∫
+        time = time.group(0)
         time = TIME_REGEX_SPLIT.split(time)
         if len(time) == 2:
             return float(time[1])
