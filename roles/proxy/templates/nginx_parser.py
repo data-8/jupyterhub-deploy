@@ -1,4 +1,5 @@
-ustom parser for nginx log suitable for use by Datadog 'dogstreams'.
+"""
+Custom parser for nginx log suitable for use by Datadog 'dogstreams'.
 To use, add to datadog.conf as follows:
     dogstreams: [path to ngnix log (e.g: "/var/log/nginx/access.log"]:[path to this python script (e.g "/usr/share/datadog/agent/dogstream/nginx.py")]:[name of parsing method of this file ("parse")]
 so, an example line would be:
@@ -6,7 +7,8 @@ so, an example line would be:
 Log of nginx should be defined like that:
     log_format time_log '$time_local "$request" S=$status $bytes_sent T=$request_time R=$http_x_forwarded_for';
 when starting dd-agent, you can find the collector.log and check if the dogstream initialized successfully
-    """
+"""
+
 from datetime import datetime
 import time
 import re
