@@ -1,6 +1,9 @@
 ---
-# Path to the NFS volume on the host
-nfspath: ''
+# Path to the NFS exported volume on the host
+nfs_server_export: ''
+# Path to the storage pool on the server. This gets
+# bind mounted onto the export path.
+nfs_server_pool: ''
 # Path to mount NFS on the host
 nfsmount: ''
 # Domain for idmapd

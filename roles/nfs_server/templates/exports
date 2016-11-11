@@ -1,3 +1,3 @@
 {% for host in groups['jupyterhub_nodes'] %}
-{{ nfspath }} {{ hostvars[host]['fqdn'] }}(rw,nohide,insecure,no_subtree_check,async)
+{{ nfs_server_export }} {{ hostvars[host]['fqdn'] }}(rw,nohide,insecure,no_subtree_check,async)
 {% endfor %}

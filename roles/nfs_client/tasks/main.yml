@@ -17,7 +17,7 @@
     - nfs
 
 - name: configure /etc/fstab on clients
-  mount: name={{ nfsmount }} src={{ nfsserver }}:{{ nfspath }} fstype=nfs opts={{ nfsoptions }} state=mounted
+  mount: name={{ nfsmount }} src={{ nfsserver }}:{{ nfs_server_export }} fstype=nfs opts={{ nfsoptions }} state=mounted
   sudo: yes
   tags:
     - nfs

@@ -1,8 +1,8 @@
 ---
-- fail: msg="nfspath is not defined"
-  when: nfspath == ''
-- fail: msg="nfsmount is not defined"
-  when: nfsmount == ''
+- fail: msg="nfs_server_export is not defined"
+  when: nfs_server_export == ''
+- fail: msg="nfs_server_pool is not defined"
+  when: nfs_server_pool == ''
 
 - name: install nfs packages
   apt: update_cache=yes cache_valid_time=600 name=nfs-kernel-server,nfs-common state=latest
@@ -17,31 +17,31 @@
     - nfs
 
 - name: unmount existing volumes
-  shell: umount {{ nfspath }} || true
+  shell: umount {{ nfs_server_export }} || true
   sudo: yes
   tags:
     - nfs
 
 - name: create root directory for NFS volume
-  file: path={{ nfspath }} state=directory
+  file: path={{ nfs_server_export }} state=directory
   sudo: yes
   tags:
     - nfs
 
 - name: create sub directory for NFS volume
-  file: path={{ nfspath }} state=directory
+  file: path={{ nfs_server_export }} state=directory
   sudo: yes
   tags:
     - nfs
 
 - name: create directory for NFS mount
-  file: path={{ nfsmount }} state=directory
+  file: path={{ nfs_server_pool }} state=directory
   sudo: yes
   tags:
     - nfs
 
 - name: mount NFS volume
-  shell: mount --bind {{ nfsmount }} {{ nfspath }}
+  shell: mount --bind {{ nfs_server_pool }} {{ nfs_server_export }}
   sudo: yes
   tags:
     - nfs
