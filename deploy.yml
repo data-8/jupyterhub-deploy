@@ -6,9 +6,16 @@
   vars_files:
   - 'secrets.vault.yml'
   roles:
-  - {role: Datadog.datadog, tags: ['rebuild-dd']}
   - common
   - docker
+
+- hosts:
+  - proxy
+  - jupyterhub_host
+  vars_files:
+  - 'secrets.vault.yml'
+  roles:
+  - {role: Datadog.datadog, tags: ['rebuild-dd']}
   - dd-docker
 
 - hosts: proxy
